@@ -35,7 +35,8 @@ export default class WledNode extends NodeRedNode {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
-    const { payload } = msg;
+    const { payload }: { payload: INodeConfig } = msg;
+
     const delay = payload.delay ?? Number(this.config.delay) ?? 0;
 
     const state = {
@@ -49,7 +50,9 @@ export default class WledNode extends NodeRedNode {
           ],
           fx: payload.effect ?? Number(this.config.effect),
           id: 0,
-          pal: payload.pal ?? Number(this.config.palette)
+          ix: payload.effectIntensity ?? Number(this.config.effectIntensity),
+          pal: payload.palette ?? Number(this.config.palette),
+          sx: payload.effectSpeed ?? Number(this.config.effectSpeed),
         } as IWledSegment,
       ],
     } as IWledState;
