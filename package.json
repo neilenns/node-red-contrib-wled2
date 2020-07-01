@@ -34,7 +34,9 @@
   },
   "homepage": "https://github.com/danecreekphotography/node-red-contrib-wled2#readme",
   "dependencies": {
+    "@types/dnssd": "^0.4.1",
     "@types/request-promise-native": "^1.0.17",
+    "dnssd": "^0.4.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8"
   },
