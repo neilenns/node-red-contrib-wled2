@@ -1,27 +1,39 @@
-// import * as request from "request-promise-native";
+import { EventEmitter } from "events";
 import * as http from "http";
+import * as helpers from "./helpers";
+import INodeConfig from "./types/INodeConfig";
 import IWledSegment from "./types/IWledSegment";
 import IWledState from "./types/IWLedState";
+import WledNode from "./WledNode";
 
+declare global {
+  namespace NodeJS {
+    // tslint:disable-next-line: interface-name
+    interface Global {
+      RED: any;
+    }
+  }
+}
 module.exports = main;
 
-let _RED: any;
+function wled(config: INodeConfig) {
+  global.RED.nodes.createNode(this, config);
+  // this.wled = new Wled();
 
-function Wled2Node(config: any) {
-  _RED.nodes.createNode(this, config);
-  const node = this;
-  node.on('input', (msg: any) => {
+  this.on("input", (msg: any, send: any, done: any) => {
+    const { payload } = msg;
     const state = {
-      on: true,
+      on: payload.color ?? (config.state ? Boolean(config.state) : undefined),
       seg: [
         {
           col: [
-            [0, 255, 0]
-          ],
-          fx: msg.payload?.effect ?? Number(config.effect),
+            payload.color1 ?? helpers.hexToRgb(config.color1),
+            payload.color2 ?? helpers.hexToRgb(config.color2),
+            payload.color3 ?? helpers.hexToRgb(config.color3)],
+          fx: payload.effect ?? Number(config.effect),
           id: 0,
-        } as IWledSegment
-      ]
+        } as IWledSegment,
+      ],
     } as IWledState;
 
     const body = JSON.stringify(state);
@@ -36,12 +48,14 @@ function Wled2Node(config: any) {
       path: "/json/state",
     } as http.RequestOptions;
 
-    http.request(options).on("error", console.error).end(body);
+    http
+      .request(options)
+      .on("error", console.error)
+      .end(body);
   });
-
 }
 
 function main(RED: any) {
-  _RED = RED;
-  _RED.nodes.registerType("wled2", Wled2Node);
+  global.RED = RED;
+  RED.nodes.registerType("wled2", WledNode);
 }
