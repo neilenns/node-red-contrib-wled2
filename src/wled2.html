@@ -14,7 +14,7 @@
       effectSpeed: { value: 128 },
       name: { value: "" },
       palette: { value: "0" },
-      state: { value: "true", required: true },
+      on: { value: "true", required: true },
     },
     inputs: 1,
     outputs: 1,
@@ -28,6 +28,11 @@
       $("#node-input-delay").typedInput({
         type: "num",
         types: ["num"],
+      });
+
+      $("#node-input-on").typedInput({
+        type: "bool",
+        types: ["bool"],
       });
 
       async function getSortedEffects() {
@@ -138,11 +143,8 @@
       <input type="text" id="node-input-address" placeholder="127.0.0.1">
     </div>
     <div class="form-row">
-      <label for="node-input-state"><i class="icon-tag"></i> State</label>
-      <select id="node-input-state">
-        <option value="false">Off</option>
-        <option value="true">On</option>
-      </select>
+      <label for="node-input-on"><i class="icon-tag"></i> On</label>
+      <input type="text" id="node-input-on" placeholder="true">
     </div>
     <div class="form-row">
       <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>

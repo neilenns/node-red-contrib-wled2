@@ -8,7 +8,7 @@ export default interface INodeConfig {
   effectIntensity: number;
   effectSpeed: number;
   name: string;
-  state: string
+  on: string;
   delay: number;
   palette: number;
 }

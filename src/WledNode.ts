@@ -31,7 +31,7 @@ export default class WledNode extends NodeRedNode {
     this.wled.getState();
   }
 
-  private setState(msg: any) {
+  private setState(msg: any): any {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
@@ -41,7 +41,7 @@ export default class WledNode extends NodeRedNode {
 
     // The on status is funky. If off is requested and a delay is set the request is really to run
     // the effect for the delayed period and then set off.
-    const requestedState = payload.state ?? (this.config.state ? JSON.parse(this.config.state) : undefined);
+    const requestedState = payload.on ?? (this.config.on ? JSON.parse(this.config.on) : undefined);
     const on = delay ? true : requestedState;
 
     const state = {
@@ -68,6 +68,9 @@ export default class WledNode extends NodeRedNode {
     if (delay) {
       this.solidTimer = setTimeout(this.setSolidState.bind(this), delay * 1000, requestedState);
     }
+
+    // Pass the message on
+    this.send(msg);
   }
 
   private setSolidState(on: boolean): void {
