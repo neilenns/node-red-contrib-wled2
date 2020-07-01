@@ -8,18 +8,19 @@
   ],
   "node-red": {
     "nodes": {
-      "lower-case": "wled2.js"
+      "lower-case": "dist/wled2.js"
     }
   },
   "main": "dist/wled2.js",
   "files": [
-    "dist/**/*"
+    "dist/**/*.js",
+    "dist/icons/*",
+    "dist/*.html"
   ],
   "scripts": {
     "copy:html": "copyfiles -f src/wled2.html dist",
-    "copy:packagejson": "copyfiles -f package.json dist",
     "copy:icons": "copyfiles icons/* dist",
-    "copy:resources": "npm run copy:html && npm run copy:packagejson &&npm run copy:icons",
+    "copy:resources": "npm run copy:html &&npm run copy:icons",
     "build": "tsc && npm run copy:resources",
     "lint": "npm run tslint && npm run markdownlint",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
@@ -35,18 +36,18 @@
     "type": "git",
     "url": "git+https://github.com/danecreekphotography/node-red-contrib-wled2.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Neil Enns",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/danecreekphotography/node-red-contrib-wled2/Issues"
   },
   "homepage": "https://github.com/danecreekphotography/node-red-contrib-wled2#readme",
   "dependencies": {
-    "@types/request-promise-native": "^1.0.17",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8"
   },
   "devDependencies": {
+    "@types/request-promise-native": "^1.0.17",
     "@types/node": "^13.1.2",
     "copyfiles": "^2.3.0",
     "markdownlint-cli": "^0.21.0",
