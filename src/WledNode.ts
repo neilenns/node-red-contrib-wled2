@@ -10,6 +10,8 @@ export default class WledNode extends NodeRedNode {
   private wled: WledDevice;
   private config: INodeConfig;
 
+  private solidTimer: NodeJS.Timeout;
+
   constructor(config: INodeConfig) {
     super();
     global.RED.nodes.createNode(this, config);
@@ -30,7 +32,12 @@ export default class WledNode extends NodeRedNode {
   }
 
   private setState(msg: any) {
+    // Any setting of state stops any prior delayed attempt to set the state to solid
+    clearTimeout(this.solidTimer);
+
     const { payload } = msg;
+    const delay = payload.delay ?? Number(this.config.delay) ?? 0;
+
     const state = {
       on: payload.state ?? (this.config.state ? JSON.parse(this.config.state) : undefined),
       seg: [
@@ -47,6 +54,23 @@ export default class WledNode extends NodeRedNode {
     } as IWledState;
 
     this.wled.setState(state);
+
+    // If a delay was requested flip to solid state after the specified number of seconds.
+    if (delay) {
+      this.solidTimer = setTimeout(this.setSolidState.bind(this), delay * 1000);
+    }
+  }
+
+  private setSolidState(): void {
+    this.wled.setState(
+      {
+        seg: [
+          {
+            fx: 0,
+            id: 0,
+          }
+        ]
+      })
   }
 
   private onConnected() {
