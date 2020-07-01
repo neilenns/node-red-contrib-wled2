@@ -7,4 +7,5 @@ export default interface INodeConfig {
   name: string;
   state: string
   delay: number;
+  palette: number;
 }
