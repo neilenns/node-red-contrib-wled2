@@ -25,8 +25,10 @@
     labelStyle: function () {
       return this.name ? "node_label_italic" : "";
     },
-    oneditprepare: () => {
-      $("#node-input-address").change(loadDropdowns);
+    oneditprepare: function () {
+      var node = this;
+
+      $("#node-input-address").change({ currentEffect: node.effect, currentPalette: node.palette }, loadDropdowns);
 
       $("#node-input-delay").typedInput({
         type: "num",
@@ -103,7 +105,7 @@
         });
       }
 
-      async function loadDropdowns() {
+      async function loadDropdowns({ data: { currentEffect, currentPalette } }) {
         // Clear out all the old options, if any, first
         $("#node-input-effect option").remove();
 
@@ -117,6 +119,7 @@
           const newOption = $(`<option value="${effect.id}">${effect.name}</option>`);
           $("#node-input-effect").append(newOption);
         });
+        $(`#node-input-effect option[value=${currentEffect}]`).attr("selected", "selected");
 
         // Populate the palettes dropdown
         const palettes = await getSortedPalettes();
@@ -124,8 +127,7 @@
           const newOption = $(`<option value="${palette.id}">${palette.name}</option>`);
           $("#node-input-palette").append(newOption);
         });
-
-        $(`#node-input-effect option[value=0]`).attr("selected", "selected");
+        $(`#node-input-palette option[value=${currentPalette}]`).attr("selected", "selected");
       }
     },
   });
