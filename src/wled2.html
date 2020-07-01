@@ -88,8 +88,8 @@
               });
             });
 
-            // Drop the first item in the list, which is Solid, before sorting. Then sort the list
-            // and add Solid back in at the top as the default.
+            // Drop the first item in the list, which is Default, before sorting. Then sort the list
+            // and add Default back in at the top as the default.
             const solid = paletteOptions.shift();
             paletteOptions = paletteOptions.sort((a, b) => {
               if (a.name == b.name) return 0;
