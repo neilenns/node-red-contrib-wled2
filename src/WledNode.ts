@@ -49,6 +49,7 @@ export default class WledNode extends NodeRedNode {
           ],
           fx: payload.effect ?? Number(this.config.effect),
           id: 0,
+          pal: payload.pal ?? Number(this.config.palette)
         } as IWledSegment,
       ],
     } as IWledState;
