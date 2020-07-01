@@ -11,15 +11,15 @@
       effect: { value: "0" },
       name: { value: "" },
       palette: { value: "0" },
-      state: { value: "true", required: true }
+      state: { value: "true", required: true },
     },
     inputs: 1,
     outputs: 1,
     icon: "white-globe.svg",
-    label: function () {
+    label: function() {
       return this.name || "wled2";
     },
-    labelStyle: function () {
+    labelStyle: function() {
       return this.name ? "node_label_italic" : "";
     },
     oneditprepare: () => {
@@ -28,7 +28,7 @@
       $("#node-input-delay").typedInput({
         type: "num",
         types: ["num"],
-      })
+      });
 
       async function getSortedEffects() {
         const server = $("#node-input-address").val();
@@ -46,18 +46,22 @@
             effects.map(effectName => {
               effectOptions.push({
                 id: effectId++,
-                name: effectName
+                name: effectName,
               });
             });
 
             // Drop the first item in the list, which is Solid, before sorting. Then sort the list
             // and add Solid back in at the top as the default.
             const solid = effectOptions.shift();
-            effectOptions = effectOptions.sort((a, b) => { if (a.name == b.name) return 0; if (a.name < b.name) return -1; if (a.name > b.name) return 1; })
+            effectOptions = effectOptions.sort((a, b) => {
+              if (a.name == b.name) return 0;
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return 1;
+            });
             effectOptions.unshift(solid);
 
             resolve(effectOptions);
-          })
+          });
         });
       }
 
@@ -77,18 +81,22 @@
             palette.map(paletteName => {
               paletteOptions.push({
                 id: paletteId++,
-                name: paletteName
+                name: paletteName,
               });
             });
 
             // Drop the first item in the list, which is Solid, before sorting. Then sort the list
             // and add Solid back in at the top as the default.
             const solid = paletteOptions.shift();
-            paletteOptions = paletteOptions.sort((a, b) => { if (a.name == b.name) return 0; if (a.name < b.name) return -1; if (a.name > b.name) return 1; })
+            paletteOptions = paletteOptions.sort((a, b) => {
+              if (a.name == b.name) return 0;
+              if (a.name < b.name) return -1;
+              if (a.name > b.name) return 1;
+            });
             paletteOptions.unshift(solid);
 
             resolve(paletteOptions);
-          })
+          });
         });
       }
 
@@ -133,20 +141,20 @@
       <label for="node-input-state"><i class="icon-tag"></i> State</label>
       <select id="node-input-state">
         <option value="false">Off</option>
-        <option value="true">On</option> 
+        <option value="true">On</option>
       </select>
     </div>
     <div class="form-row">
       <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
-      <input type="color" id="node-input-color1"> 
+      <input type="color" id="node-input-color1">
     </div>
     <div class="form-row">
       <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
-      <input type="color" id="node-input-color2"> 
+      <input type="color" id="node-input-color2">
     </div>
     <div class="form-row">
       <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
-      <input type="color" id="node-input-color3"> 
+      <input type="color" id="node-input-color3">
     </div>
     <div class="form-row">
       <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
