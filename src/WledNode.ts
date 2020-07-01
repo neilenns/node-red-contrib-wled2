@@ -39,8 +39,13 @@ export default class WledNode extends NodeRedNode {
 
     const delay = payload.delay ?? Number(this.config.delay) ?? 0;
 
+    // The on status is funky. If off is requested and a delay is set the request is really to run
+    // the effect for the delayed period and then set off.
+    const requestedState = payload.state ?? (this.config.state ? JSON.parse(this.config.state) : undefined);
+    const on = delay ? true : requestedState;
+
     const state = {
-      on: payload.state ?? (this.config.state ? JSON.parse(this.config.state) : undefined),
+      on,
       seg: [
         {
           col: [
@@ -61,13 +66,14 @@ export default class WledNode extends NodeRedNode {
 
     // If a delay was requested flip to solid state after the specified number of seconds.
     if (delay) {
-      this.solidTimer = setTimeout(this.setSolidState.bind(this), delay * 1000);
+      this.solidTimer = setTimeout(this.setSolidState.bind(this), delay * 1000, requestedState);
     }
   }
 
-  private setSolidState(): void {
+  private setSolidState(on: boolean): void {
     this.wled.setState(
       {
+        on,
         seg: [
           {
             fx: 0,
