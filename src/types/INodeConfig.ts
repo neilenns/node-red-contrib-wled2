@@ -5,5 +5,5 @@ export default interface INodeConfig {
   color3: string; // Comes in as #aabbcc
   effect: number;
   name: string;
-  state: boolean;
+  state: string;
 }

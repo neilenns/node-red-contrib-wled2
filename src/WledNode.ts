@@ -32,7 +32,7 @@ export default class WledNode extends NodeRedNode {
   private setState(msg: any) {
     const { payload } = msg;
     const state = {
-      on: payload.color ?? (this.config.state ? Boolean(this.config.state) : undefined),
+      on: payload.state ?? (this.config.state ? JSON.parse(this.config.state) : undefined),
       seg: [
         {
           col: [
