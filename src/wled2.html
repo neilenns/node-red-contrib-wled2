@@ -187,4 +187,21 @@
 
 <script type="text/html" data-help-name="wled2">
   <p>A node for controlling lights via WLED.</p>
+
+  <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">json</span>
+        </dt>
+        <dd>The WLED settings to set on the WLED device. These override any values specified in the node's properties.</dd>
+    </dl>
+
+    <ol class="node-ports">
+      <li>Standard output
+          <dl class="message-properties">
+              <dt>payload <span class="property-type">json</span></dt>
+              <dd>The payload that was received as input.</dd>
+          </dl>
+      </li>
+  </ol>
 </script>
