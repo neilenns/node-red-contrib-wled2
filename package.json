@@ -10,7 +10,8 @@
   "scripts": {
     "copy:html": "copyfiles -f src/wled2.html dist",
     "copy:packagejson": "copyfiles -f package.json dist",
-    "copy:resources": "npm run copy:html && npm run copy:packagejson",
+    "copy:icons": "copyfiles icons/* dist",
+    "copy:resources": "npm run copy:html && npm run copy:packagejson &&npm run copy:icons",
     "build": "tsc && npm run copy:resources",
     "lint": "npm run tslint && npm run markdownlint",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
