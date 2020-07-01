@@ -7,6 +7,10 @@
       "lower-case": "wled2.js"
     }
   },
+  "main": "dist/wled2.js",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "copy:html": "copyfiles -f src/wled2.html dist",
     "copy:packagejson": "copyfiles -f package.json dist",
