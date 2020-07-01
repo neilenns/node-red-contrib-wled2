@@ -23,14 +23,76 @@
       return this.name ? "node_label_italic" : "";
     },
     oneditprepare: () => {
-      $("#node-input-address").change(loadEffects);
+      $("#node-input-address").change(loadDropdowns);
 
       $("#node-input-delay").typedInput({
         type: "num",
         types: ["num"],
       })
 
-      function loadEffects() {
+      async function getSortedEffects() {
+        const server = $("#node-input-address").val();
+
+        if (!server) return;
+
+        const restUrl = new URL("/json/effects", `http://${server}`).toString();
+
+        // The effect IDs are the index of the effect in the array, and is what's
+        // sent to select the event.
+        let effectId = 0;
+        return new Promise((resolve, reject) => {
+          $.getJSON(restUrl).done(effects => {
+            let effectOptions = [];
+            effects.map(effectName => {
+              effectOptions.push({
+                id: effectId++,
+                name: effectName
+              });
+            });
+
+            // Drop the first item in the list, which is Solid, before sorting. Then sort the list
+            // and add Solid back in at the top as the default.
+            const solid = effectOptions.shift();
+            effectOptions = effectOptions.sort((a, b) => { if (a.name == b.name) return 0; if (a.name < b.name) return -1; if (a.name > b.name) return 1; })
+            effectOptions.unshift(solid);
+
+            resolve(effectOptions);
+          })
+        });
+      }
+
+      async function getSortedPalettes() {
+        const server = $("#node-input-address").val();
+
+        if (!server) return;
+
+        const restUrl = new URL("/json/palettes", `http://${server}`).toString();
+
+        // The effect IDs are the index of the effect in the array, and is what's
+        // sent to select the event.
+        let paletteId = 0;
+        return new Promise((resolve, reject) => {
+          $.getJSON(restUrl).done(palette => {
+            let paletteOptions = [];
+            palette.map(paletteName => {
+              paletteOptions.push({
+                id: paletteId++,
+                name: paletteName
+              });
+            });
+
+            // Drop the first item in the list, which is Solid, before sorting. Then sort the list
+            // and add Solid back in at the top as the default.
+            const solid = paletteOptions.shift();
+            paletteOptions = paletteOptions.sort((a, b) => { if (a.name == b.name) return 0; if (a.name < b.name) return -1; if (a.name > b.name) return 1; })
+            paletteOptions.unshift(solid);
+
+            resolve(paletteOptions);
+          })
+        });
+      }
+
+      async function loadDropdowns() {
         // Clear out all the old options, if any, first
         $("#node-input-effect option").remove();
 
@@ -38,26 +100,18 @@
 
         if (!server) return;
 
-        let restUrl = new URL("/json/effects", `http://${server}`).toString();
-
-        // The effect IDs are the index of the effect in the array, and is what's
-        // sent to select the event.
-        let effectId = 0;
-        $.getJSON(restUrl).done(effects => {
-          effects.map(effectName => {
-            const newOption = $(`<option value="${effectId++}">${effectName}</option>`);
-            $("#node-input-effect").append(newOption);
-          });
+        // Populate the effects dropdown
+        const effects = await getSortedEffects();
+        effects.map(effect => {
+          const newOption = $(`<option value="${effect.id}">${effect.name}</option>`);
+          $("#node-input-effect").append(newOption);
         });
 
-        // Get the palettes
-        let paletteId = 0;
-        restUrl = new URL("/json/palettes", `http://${server}`).toString();
-        $.getJSON(restUrl).done(palettes => {
-          palettes.map(paletteName => {
-            const newOption = $(`<option value="${paletteId++}">${paletteName}</option>`);
-            $("#node-input-palette").append(newOption);
-          });
+        // Populate the palettes dropdown
+        const palettes = await getSortedPalettes();
+        palettes.map(palette => {
+          const newOption = $(`<option value="${palette.id}">${palette.name}</option>`);
+          $("#node-input-palette").append(newOption);
         });
 
         $(`#node-input-effect option[value=0]`).attr("selected", "selected");
