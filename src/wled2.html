@@ -6,9 +6,9 @@
       address: { value: "", required: true },
       brightness: { value: 128 },
       delay: { value: 0 },
-      color1: { value: 1 },
-      color2: { value: 1 },
-      color3: { value: 1 },
+      color1: { value: "#FFFFFF" },
+      color2: { value: "#FFFFFF" },
+      color3: { value: "#FFFFFF" },
       effect: { value: 0 },
       effectIntensity: { value: 128 },
       effectSpeed: { value: 128 },
@@ -22,13 +22,8 @@
     label: function () {
       return this.name || "wled2";
     },
-    labelStyle: function () {
-      return this.name ? "node_label_italic" : "";
-    },
     oneditprepare: function () {
-      var node = this;
-
-      $("#node-input-address").change({ currentEffect: node.effect, currentPalette: node.palette }, loadDropdowns);
+      $("#node-input-address").change({ currentEffect: this.effect, currentPalette: this.palette }, loadDropdowns);
 
       $("#node-input-delay").typedInput({
         type: "num",
