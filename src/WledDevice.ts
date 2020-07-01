@@ -1,5 +1,4 @@
 import { EventEmitter } from "events";
-import * as http from "http";
 import * as request from "request-promise-native";
 import IWledState from "./types/IWLedState";
 
@@ -20,11 +19,10 @@ export default class WledDevice extends EventEmitter {
    * @returns The current state information.
    */
   public async getState(): Promise<void> {
-    const uri = new URL("/json/state", `http://${this.server}`).toString()
+    const uri = new URL("/json/state", `http://${this.server}`).toString();
     try {
-      this.currentState = await request.get(uri, { json: true }) as IWledState;
-    }
-    catch (e) {
+      this.currentState = (await request.get(uri, { json: true })) as IWledState;
+    } catch (e) {
       console.log(`Unable to get WLED device state: ${e}`);
       this.setConnectionState(false);
     }
@@ -47,11 +45,10 @@ export default class WledDevice extends EventEmitter {
       json: true,
     } as request.RequestPromiseOptions;
 
-    const uri = new URL("/json/state", `http://${this.server}`).toString()
+    const uri = new URL("/json/state", `http://${this.server}`).toString();
     try {
       await request.put(uri, options);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(`Unable to set WLED device state: ${e}`);
     }
   }
