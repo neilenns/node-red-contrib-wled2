@@ -1,0 +1,11 @@
+{
+  "name": "node-red-contrib-wled2",
+  "version": "1.0.0",
+  "description": "NodeRed node for WLED control",
+  "node-red": {
+    "nodes": {
+      "lower-case": "lower-case.js"
+    }
+  },
+  "dependencies": {}
+}

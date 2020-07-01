@@ -1,0 +1,45 @@
+{
+  "name": "node-red-contrib-wled2",
+  "version": "1.0.0",
+  "description": "NodeRed node for WLED control",
+  "node-red": {
+    "nodes": {
+      "lower-case": "wled2.js"
+    }
+  },
+  "scripts": {
+    "copy:html": "copyfiles -f src/wled2.html dist",
+    "copy:packagejson": "copyfiles -f package.json dist",
+    "copy:resources": "npm run copy:html && npm run copy:packagejson",
+    "build": "tsc && npm run copy:resources",
+    "lint": "npm run tslint && npm run markdownlint",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "markdownlint": "node ./node_modules/markdownlint-cli/markdownlint.js **/*.md --ignore node_modules",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags",
+    "tslint": "tslint -p tsconfig.json",
+    "version": "npm run format && git add -A src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danecreekphotography/node-red-contrib-wled2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danecreekphotography/node-red-contrib-wled2/Issues"
+  },
+  "homepage": "https://github.com/danecreekphotography/node-red-contrib-wled2#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^13.1.2",
+    "copyfiles": "^2.3.0",
+    "markdownlint-cli": "^0.21.0",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.4"
+  }
+}

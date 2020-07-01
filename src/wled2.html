@@ -1,0 +1,62 @@
+<script type="text/javascript">
+  RED.nodes.registerType('wled2', {
+    category: 'function',
+    color: '#a6bbcf',
+    defaults: {
+      name: { value: "" },
+      address: { value: "", required: true },
+      effect: { value: "", required: true }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "white-globe.svg",
+    label: function () {
+      return this.name || "wled2";
+    },
+    oneditprepare: () => {
+      $('#node-input-address').change(loadEffects);
+
+      function loadEffects() {
+        // Clear out all the old options, if any, first
+        $('#node-input-effect option').remove();
+
+        const server = $('#node-input-address').val();
+
+        if (!server) return;
+
+        const serverUrl = new URL('/json/effects', `http://${server}`).toString();
+
+        // The effect IDs are the index of the effect in the array, and is what's
+        // sent to select the event.
+        let effectId = 0;
+        $.getJSON(`${serverUrl}`).done((effects) => {
+          effects.map((effectName) => {
+            const newOption = $(`<option value="${effectId++}">${effectName}</option>`);
+            $("#node-input-effect").append(newOption);
+          })
+        })
+
+        $('#node-input-effect option[value=0]').attr('selected', 'selected');
+      }
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="wled2">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-address"><i class="icon-server"></i> WLED server</label>
+    <input type="text" id="node-input-address" placeholder="127.0.0.1">
+  </div>
+  <div class="form-row">
+    <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
+    <select id="node-input-effect"></select>
+</div>
+</script>
+
+<script type="text/html" data-help-name="wled2">
+  <p>A node for controlling lights via WLED.</p>
+</script>
