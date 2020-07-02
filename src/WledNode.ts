@@ -74,16 +74,15 @@ export default class WledNode extends NodeRedNode {
   }
 
   private setSolidState(on: boolean): void {
-    this.wled.setState(
-      {
-        on,
-        seg: [
-          {
-            fx: 0,
-            id: 0,
-          }
-        ]
-      })
+    this.wled.setState({
+      on,
+      seg: [
+        {
+          fx: 0,
+          id: 0,
+        },
+      ],
+    });
   }
 
   private onConnected() {
