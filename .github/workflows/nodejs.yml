@@ -35,3 +35,4 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm audit
+      - run: npm pack
