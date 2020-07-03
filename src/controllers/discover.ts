@@ -34,27 +34,30 @@ export default async function discover(request: express.Request, response: expre
 
   // Listen for responses to the mdns query
   browser.on("response", (response: Response) => {
-    // Only look at responses where there's an A record with a single IP address, which is what WLED devices return
+    // Only look at the A record
     response.additionals
       ?.filter(additional => {
-        return additional.type === "A" && typeof additional.data === "string";
+        return additional.type === "A";
       })
-      // At this point the additionals were filtered down to A records with a single IP address. Check
-      // to see if any of those addresses are a WLED device.
+      // At this point the additionals were filtered down to just A records
       .map(async additional => {
         try {
-          // Attempt to access the known good endpoint for a WLED device
+          // Attempt to access the known good endpoint for a WLED device to get the device name.
+          // This also confirms it is a WLED device since other random devices will sometimes
+          // respond to the request even though the query was for _wled (e.g. some Tasmota
+          // bulbs seem to do this).
           const response = await fetch(`http://${additional.data}/json`);
           if (!response.ok) {
             return;
           }
-          // At this point assume it's a WLED device
+
           const device = (await response.json()) as IWledDiscoveredDevice;
           const wledDevice = {
             name: device.info.name,
             address: additional.data,
             version: device.info.version,
           };
+
           console.log(`Found a WLED device: ${JSON.stringify(wledDevice)}`);
           wledDevices.push(wledDevice);
         } catch (e) {
@@ -68,7 +71,7 @@ export default async function discover(request: express.Request, response: expre
     browser.query({
       questions: [
         {
-          name: "_http._tcp.local",
+          name: "_wled._tcp.local",
           type: "PTR",
         },
       ],
