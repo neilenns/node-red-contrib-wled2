@@ -46,10 +46,6 @@
         }
       });
 
-      $.get("/wled2/discover", data => {
-        console.log(data);
-      });
-
       // Swaps the server input field to a text box with the current server value in it.
       function manualWledIP() {
         var current = $("#node-input-address").val();
