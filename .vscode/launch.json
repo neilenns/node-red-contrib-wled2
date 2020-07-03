@@ -8,15 +8,21 @@
       "type": "node",
       "request": "launch",
       "preLaunchTask": "npm:build",
-      "name": "Launch Program",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "name": "Launch NodeRed - Linux",
+      "skipFiles": ["<node_internals>/**"],
       "program": "/usr/local/share/npm-global/lib/node_modules/node-red/red.js",
       "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "npm:build",
+      "name": "Launch NodeRed - Windows",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "C:/Users/neile/AppData/Roaming/npm/node_modules/node-red/red.js",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     }
   ]
 }
