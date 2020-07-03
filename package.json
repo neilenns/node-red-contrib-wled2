@@ -24,7 +24,7 @@
     "build": "tsc && npm run copy:resources",
     "lint:eslint": "eslint --fix -c .eslintrc.json --ext .ts src/",
     "lint:markdownlint": "node ./node_modules/markdownlint-cli/markdownlint.js **/*.md --ignore node_modules",
-    "lint": "npm run eslint && npm run lint:markdownlint",
+    "lint": "npm run lint:eslint && npm run lint:markdownlint",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
