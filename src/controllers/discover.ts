@@ -28,8 +28,8 @@ export default async function discover(request: express.Request, response: expre
   const wledDevices: IWledDevice[] = [];
 
   const browser = new mdns({
-    reuseAddr: true, // in case other mdns service is running
-    noInit: true, // do not initialize on creation
+    reuseAddr: true, // In case another mdns service is running
+    noInit: true, // Will init after everything is configured
   });
 
   // Listen for responses to the mdns query
