@@ -84,6 +84,9 @@ export default async function discover(request: express.Request, response: expre
   // After the discovery is complete respond with the results
   setTimeout(() => {
     browser.destroy();
-    response.json(wledDevices);
+    // This nonsense de-duplicates the array. Since TypeScript can't use
+    // the spread operator on a Set it has to get converted to an array
+    // first.
+    response.json([...Array.from(new Set(wledDevices))]);
   }, timeout);
 }

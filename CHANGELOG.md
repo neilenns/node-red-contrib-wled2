@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Miscellaneous auto-discovery improvements. Resolves [issue 29](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23) and [issue 30](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23).
+
 ## v1.2.1 - 2020-07-03
 
 - Auto-discovery now works for NodeRed installs hosted inside Home Assistant. Resolves [issue 27](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23).
