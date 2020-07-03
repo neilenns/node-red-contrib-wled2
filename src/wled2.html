@@ -62,7 +62,7 @@
         );
 
         try {
-          const devices = await $.getJSON("/wled2/discover");
+          const devices = await $.getJSON("wled2/discover");
           if (!devices || devices.length == 0) {
             RED.notify("No WLED devices found", "error");
           }
@@ -76,7 +76,7 @@
           });
           $("#node-input-address").val(current);
         } catch (e) {
-          RED.notify(`Unable to discover devices: ${e}`);
+          RED.notify(`Unable to discover devices: ${e.responseText}`);
         }
       }
 
