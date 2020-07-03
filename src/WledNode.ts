@@ -1,10 +1,14 @@
-import { EventEmitter } from "events";
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Neil Enns. All rights reserved.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 import * as helpers from "./helpers";
 import NodeRedNode from "./NodeRedNode";
 import INodeConfig from "./types/INodeConfig";
 import IWledSegment from "./types/IWledSegment";
 import IWledState from "./types/IWLedState";
 import WledDevice from "./WledDevice";
+import INodeRedMessage from "./types/INodeRedMessage";
 
 export default class WledNode extends NodeRedNode {
   private wled: WledDevice;
@@ -24,14 +28,14 @@ export default class WledNode extends NodeRedNode {
     this.wled = new WledDevice({ server: config.address });
     this.config = config;
 
-    this.on("input", msg => this.setState(msg));
+    this.on("input", (msg: INodeRedMessage) => this.setState(msg));
     this.wled.on("connected", () => this.onConnected());
     this.wled.on("disconnected", () => this.onDisconnected());
 
     this.wled.getState();
   }
 
-  private setState(msg: any): any {
+  private setState(msg: INodeRedMessage): void {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
