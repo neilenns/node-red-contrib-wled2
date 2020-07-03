@@ -5,6 +5,8 @@
 import WledNode from "./WledNode";
 import INodeConfig from "./types/INodeConfig";
 import NodeRedNode from "./NodeRedNode";
+import discover from "./controllers/discover";
+import * as Express from "express";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -18,6 +20,7 @@ declare global {
 
 type NodeRed = {
   nodes: NodeRedNodes;
+  httpAdmin: Express.Application;
 };
 
 type NodeRedNodes = {
@@ -29,5 +32,7 @@ module.exports = main;
 
 function main(RED: NodeRed) {
   global.RED = RED;
+
+  global.RED.httpAdmin.get("/wled2/discover", discover);
   RED.nodes.registerType("wled2", WledNode);
 }
