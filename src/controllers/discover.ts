@@ -78,7 +78,7 @@ export default async function discover(request: express.Request, response: expre
   // initialize the server now that we are watching for events
   browser.initServer();
 
-  // After the discovery is complete process the results
+  // After the discovery is complete respond with the results
   setTimeout(() => {
     browser.destroy();
     response.json(wledDevices);
