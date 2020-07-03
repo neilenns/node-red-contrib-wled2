@@ -28,8 +28,8 @@ export default async function discover(request: express.Request, response: expre
   const wledDevices: IWledDevice[] = [];
 
   const browser = new mdns({
-    reuseAddr: true, // in case other mdns service is running
-    noInit: true, // do not initialize on creation
+    reuseAddr: true, // Just in case another MDNS service is running
+    noInit: true, // Don't initialize right away
   });
 
   // Listen for responses to the mdns query
@@ -45,14 +45,15 @@ export default async function discover(request: express.Request, response: expre
         try {
           // Attempt to access the known good endpoint for a WLED device
           const response = await fetch(`http://${additional.data}/json`);
+          // If the response wasn't success then assume it wasn't a WLED device and skip it.
           if (!response.ok) {
             return;
           }
           // At this point assume it's a WLED device
           const device = (await response.json()) as IWledDiscoveredDevice;
           const wledDevice = {
-            name: device.info.name,
             address: additional.data,
+            name: device.info.name,
             version: device.info.version,
           };
           console.log(`Found a WLED device: ${JSON.stringify(wledDevice)}`);
@@ -75,10 +76,10 @@ export default async function discover(request: express.Request, response: expre
     });
   });
 
-  // initialize the server now that we are watching for events
+  // Initialize the browser now that everything is ready
   browser.initServer();
 
-  // After the discovery is complete respond with the results
+  // After the discovery is complete respond with the results.
   setTimeout(() => {
     browser.destroy();
     response.json(wledDevices);
