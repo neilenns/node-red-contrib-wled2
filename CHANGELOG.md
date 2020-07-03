@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Auto-discovery now works for NodeRed installs hosted inside Home Assistant. Resolves [issue 27](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23).
+
 ## v1.2.0 - 2020-07-03
 
 - Auto-discovery of WLED devices is now supported. Resolves [issue 23](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23).
