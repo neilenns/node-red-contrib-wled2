@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Auto-discovery of WLED devices is now supported. Resolves [issue 23](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/23).
 - Node name now shows in italics if set to a custom name. Resolves [issue 20](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/20).
 
 ## v1.1.0 - 2020-07-02
