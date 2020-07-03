@@ -3,7 +3,10 @@
     "Enns",
     "IWLed",
     "Wled",
+    "additionals",
     "copyfiles",
+    "dnssd",
+    "mdns",
     "oneditprepare",
     "preversion",
     "readonly"

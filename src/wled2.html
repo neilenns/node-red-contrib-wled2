@@ -38,6 +38,48 @@
         types: ["bool"],
       });
 
+      $("#node-config-discover").click(function() {
+        if ($("#node-input-address").prop("tagName") === "INPUT") {
+          searchAndSelectWled();
+        } else {
+          manualWledIP();
+        }
+      });
+
+      // Swaps the server input field to a text box with the current server value in it.
+      function manualWledIP() {
+        var current = $("#node-input-address").val();
+        $("#node-input-address").replaceWith('<input type="text" id="node-input-address" style="width: 100%"/>');
+        $("#node-input-address").val(current);
+      }
+
+      // Swaps the server input field to a dropdown and triggers auto-discovery.
+      async function searchAndSelectWled() {
+        var current = $("#node-input-address").val();
+        $("#node-input-address").replaceWith('<select id="node-input-address" style="width: 100%"></select>');
+        $("#node-input-address").append(
+          '<option selected="selected" value="null">Searching for WLED devices...</option>',
+        );
+
+        try {
+          const devices = await $.getJSON("/wled2/discover");
+          if (!devices || devices.length == 0) {
+            RED.notify("No WLED devices found", "error");
+          }
+
+          $("#node-input-address").empty();
+
+          devices.map(device => {
+            $("#node-input-address").append(
+              `<option value="${device.address}">${device.address} ${device.name ? `(${device.name})` : ""}</option>`,
+            );
+          });
+          $("#node-input-address").val(current);
+        } catch (e) {
+          RED.notify(`Unable to discover devices: ${e}`);
+        }
+      }
+
       function populateDropdown(dropdownId, items) {
         const dropdown = $(dropdownId);
 
@@ -160,7 +202,89 @@
       }
     },
   });
+</script>
 
+<script type="text/html" data-template-name="wled2">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-address"><i class="icon-server"></i> WLED server</label>
+      <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+        <div style="position: absolute; left: 0px; right: 40px;">
+          <input type="text" id="node-input-address" placeholder="127.0.0.1" style="width: 100%">
+        </div>
+        <a id="node-config-discover" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+          <i class="fa fa-search"></i>
+        </a>
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="node-input-on"><i class="icon-tag"></i> On</label>
+      <input type="text" id="node-input-on" placeholder="true">
+    </div>
+    <div class="form-row">
+      <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>
+      <input type="range" id="node-input-brightness" min="1" max="255">
+    </div>
+    <div class="form-row">
+      <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
+      <input type="color" id="node-input-color1">
+    </div>
+    <div class="form-row">
+      <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
+      <input type="color" id="node-input-color2">
+    </div>
+    <div class="form-row">
+      <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
+      <input type="color" id="node-input-color3">
+    </div>
+    <div class="form-row">
+      <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
+      <select id="node-input-effect"></select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-effectSpeed"><i class="icon-tag"></i> Effect speed</label>
+    <input type="range" id="node-input-effectSpeed" min="0" max="255">
+  </div>
+  <div class="form-row">
+    <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
+    <input type="range" id="node-input-effectIntensity" min="0" max="255">
+  </div>
+
+    <div class="form-row">
+      <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
+      <select id="node-input-palette"></select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
+    <input type="text" id="node-input-delay" placeholder="0">
+  </div>
+</script>
+
+<script type="text/html" data-help-name="wled2">
+  <p>A node for controlling lights via WLED.</p>
+
+  <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">json</span>
+        </dt>
+        <dd>The WLED settings to set on the WLED device. These override any values specified in the node's properties.</dd>
+    </dl>
+
+    <ol class="node-ports">
+      <li>Standard output
+          <dl class="message-properties">
+              <dt>payload <span class="property-type">json</span></dt>
+              <dd>The payload that was received as input.</dd>
+          </dl>
+      </li>
+  </ol>
+</script>
+
+<script type="text/javascript">
   const defaultEffects = [
     { id: 0, name: "Solid" },
     { id: 27, name: "Android" },
@@ -320,77 +444,4 @@
     { id: 17, name: "Yellowout" },
     { id: 42, name: "Yelmag" },
   ];
-</script>
-
-<script type="text/html" data-template-name="wled2">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-      <label for="node-input-address"><i class="icon-server"></i> WLED server</label>
-      <input type="text" id="node-input-address" placeholder="127.0.0.1">
-    </div>
-    <div class="form-row">
-      <label for="node-input-on"><i class="icon-tag"></i> On</label>
-      <input type="text" id="node-input-on" placeholder="true">
-    </div>
-    <div class="form-row">
-      <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>
-      <input type="range" id="node-input-brightness" min="1" max="255">
-    </div>
-    <div class="form-row">
-      <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
-      <input type="color" id="node-input-color1">
-    </div>
-    <div class="form-row">
-      <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
-      <input type="color" id="node-input-color2">
-    </div>
-    <div class="form-row">
-      <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
-      <input type="color" id="node-input-color3">
-    </div>
-    <div class="form-row">
-      <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
-      <select id="node-input-effect"></select>
-  </div>
-  <div class="form-row">
-    <label for="node-input-effectSpeed"><i class="icon-tag"></i> Effect speed</label>
-    <input type="range" id="node-input-effectSpeed" min="0" max="255">
-  </div>
-  <div class="form-row">
-    <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
-    <input type="range" id="node-input-effectIntensity" min="0" max="255">
-  </div>
-
-    <div class="form-row">
-      <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
-      <select id="node-input-palette"></select>
-  </div>
-  <div class="form-row">
-    <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
-    <input type="text" id="node-input-delay" placeholder="0">
-  </div>
-</script>
-
-<script type="text/html" data-help-name="wled2">
-  <p>A node for controlling lights via WLED.</p>
-
-  <h3>Inputs</h3>
-    <dl class="message-properties">
-        <dt>payload
-            <span class="property-type">json</span>
-        </dt>
-        <dd>The WLED settings to set on the WLED device. These override any values specified in the node's properties.</dd>
-    </dl>
-
-    <ol class="node-ports">
-      <li>Standard output
-          <dl class="message-properties">
-              <dt>payload <span class="property-type">json</span></dt>
-              <dd>The payload that was received as input.</dd>
-          </dl>
-      </li>
-  </ol>
 </script>
