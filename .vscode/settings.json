@@ -5,6 +5,7 @@
     "Wled",
     "copyfiles",
     "oneditprepare",
-    "preversion"
+    "preversion",
+    "readonly"
   ]
 }

@@ -22,13 +22,13 @@
     "copy:icons": "copyfiles icons/* dist",
     "copy:resources": "npm run copy:html && npm run copy:icons",
     "build": "tsc && npm run copy:resources",
-    "lint": "npm run tslint && npm run markdownlint",
+    "lint:eslint": "eslint --fix -c .eslintrc.json --ext .ts src/",
+    "lint:markdownlint": "node ./node_modules/markdownlint-cli/markdownlint.js **/*.md --ignore node_modules",
+    "lint": "npm run eslint && npm run lint:markdownlint",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "markdownlint": "node ./node_modules/markdownlint-cli/markdownlint.js **/*.md --ignore node_modules",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
     "postversion": "git push && git push --tags",
-    "tslint": "tslint -p tsconfig.json",
     "version": "npm run format && git add -A src"
   },
   "repository": {
@@ -46,13 +46,16 @@
     "request-promise-native": "^1.0.8"
   },
   "devDependencies": {
-    "@types/request-promise-native": "^1.0.17",
     "@types/node": "^13.1.2",
+    "@types/request-promise-native": "^1.0.17",
+    "@typescript-eslint/eslint-plugin": "^3.5.0",
+    "@typescript-eslint/parser": "^3.5.0",
     "copyfiles": "^2.3.0",
+    "eslint": "^7.3.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-notice": "^0.9.10",
     "markdownlint-cli": "^0.21.0",
     "prettier": "^1.19.1",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.4"
   }
 }
