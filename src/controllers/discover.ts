@@ -58,10 +58,10 @@ export default async function discover(request: express.Request, response: expre
             version: device.info.version,
           };
 
-          console.log(`Found a WLED device: ${JSON.stringify(wledDevice)}`);
+          console.log(`wled2: Found a device: ${JSON.stringify(wledDevice)}`);
           wledDevices.push(wledDevice);
         } catch (e) {
-          console.log(e);
+          console.log(`wled2: Failed to request discovered device data: ${e}`);
         }
       });
   });
