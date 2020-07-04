@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Disconnected state shows correctly now. Resolves [issue 41](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/41).
+
 ## v1.3.1 - 2020-07-04
 
 - Clean up an error when retrieving effects and palettes. Resolves [issue 35](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/35).
