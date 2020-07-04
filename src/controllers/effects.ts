@@ -23,12 +23,11 @@ export default async function effects(request: express.Request, response: expres
 
     // Get all the effects
     const rawEffects = (await result.json()) as string[];
-    let effectId = 0;
 
     // Convert to the format required for the response
     response.json(
-      rawEffects.map(effectName => {
-        return { id: effectId++, name: effectName } as IWledEffect;
+      rawEffects.map((name: string, id: number) => {
+        return { id, name } as IWledEffect;
       }),
     );
   } catch (e) {
