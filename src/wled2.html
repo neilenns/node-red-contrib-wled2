@@ -147,12 +147,6 @@
       }
 
       async function loadDropdowns({ data: { currentEffect, currentPalette } }) {
-        // Load the default values
-        // populateDropdown("#node-input-effect", defaultEffects);
-        // $(`#node-input-effect option[value=${currentEffect}]`).attr("selected", "selected");
-        // populateDropdown("#node-input-palette", defaultPalettes);
-        // $(`#node-input-palette option[value=${currentPalette}]`).attr("selected", "selected");
-
         // Attempt to retrieve from the WLED device
         const server = $("#node-input-address").val();
         if (!server) return;
