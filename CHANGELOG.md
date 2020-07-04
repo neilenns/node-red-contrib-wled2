@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.1 - 2020-07-04
+
+- Clean up an error when retrieving effects and palettes. Resolves [issue 35](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/35).
+
 ## v1.3.0 - 2020-07-04
 
 - Effects and palettes are now properly loaded from the devices, with fallback to defaults. Resolves [issue 33](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/33).
