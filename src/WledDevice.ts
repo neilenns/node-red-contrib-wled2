@@ -2,19 +2,20 @@
  *  Copyright (c) Neil Enns. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import { EventEmitter } from "events";
 import * as request from "request-promise-native";
+import { EventEmitter } from "events";
 import IWledState from "./types/IWLedState";
 
 export default class WledDevice extends EventEmitter {
   public server: string;
 
-  private isConnected = false;
+  private isConnected: boolean;
   private currentState: IWledState;
 
   constructor(init?: Partial<WledDevice>) {
     super();
     Object.assign(this, init);
+    this.setConnectionState(false);
   }
 
   /**
@@ -60,7 +61,7 @@ export default class WledDevice extends EventEmitter {
   private setConnectionState(state: boolean) {
     if (this.isConnected !== state) {
       this.isConnected = state;
-      this.emit(this.isConnected ? "connected" : "disconnected");
     }
+    this.emit(this.isConnected ? "connected" : "disconnected");
   }
 }
