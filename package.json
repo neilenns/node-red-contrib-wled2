@@ -8,7 +8,7 @@
   ],
   "node-red": {
     "nodes": {
-      "lower-case": "dist/wled2.js"
+      "wled2": "dist/wled2.js"
     }
   },
   "main": "dist/wled2.js",
