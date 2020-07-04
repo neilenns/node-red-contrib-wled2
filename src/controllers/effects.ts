@@ -23,15 +23,14 @@ export default async function effects(request: express.Request, response: expres
 
     // Get all the effects
     const rawEffects = (await result.json()) as string[];
-    const effects: IWledEffect[] = [];
     let effectId = 0;
 
     // Convert to the format required for the response
-    rawEffects.map(effectName => {
-      effects.push({ id: effectId++, name: effectName });
-    });
-
-    response.json(effects);
+    response.json(
+      rawEffects.map(effectName => {
+        return { id: effectId++, name: effectName } as IWledEffect;
+      }),
+    );
   } catch (e) {
     console.log(`wled2: Unable to load effects: ${e}. Falling back to defaults.`);
     response.json(defaultEffects);

@@ -23,11 +23,12 @@ export default async function palettes(request: express.Request, response: expre
 
     // Get all the palettes
     const rawPalettes = (await result.json()) as string[];
-    const palettes: IWledPalette[] = [];
     let paletteId = 0;
-    rawPalettes.map(paletteName => {
-      palettes.push({ id: paletteId++, name: paletteName });
-    });
+    response.json(
+      rawPalettes.map(paletteName => {
+        return { id: paletteId++, name: paletteName } as IWledPalette;
+      }),
+    );
 
     response.json(palettes);
   } catch (e) {
