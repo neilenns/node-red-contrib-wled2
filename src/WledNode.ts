@@ -20,8 +20,9 @@ export default class WledNode extends NodeRedNode {
     super();
     global.RED.nodes.createNode(this, config);
 
+    // When this is loaded for the node palette there's no address
+    // so just skip the rest and return silently.
     if (!config.address) {
-      this.error("No WLED device address specified");
       return;
     }
 

@@ -3,6 +3,7 @@
 ## v1.3.1 - 2020-07-04
 
 - Clean up an error when retrieving effects and palettes. Resolves [issue 35](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/35).
+- Clean up an unnecessary error when the node is first created. Resolves [issue 37](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/37).
 
 ## v1.3.0 - 2020-07-04
 
