@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Corrected the name of the node in package.json. Resolves [issue 42](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/42).
 - Disconnected state shows correctly now. Resolves [issue 41](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/41).
 
 ## v1.3.1 - 2020-07-04
