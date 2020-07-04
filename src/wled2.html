@@ -97,38 +97,26 @@
 
         if (!server) return;
 
-        const restUrl = new URL("/json/effects", `http://${server}`).toString();
+        // Request the list of effects from the WLED device via the backend.
+        // This works around https/http issues when running this node in a
+        // NodeRed instance installed on Home Assistant.
+        let effects = await $.getJSON(`wled2/effects/${server}`);
 
-        // The effect IDs are the index of the effect in the array, and is what's
-        // sent to select the event.
-        let effectId = 0;
-        return new Promise((resolve, reject) => {
-          $.getJSON(restUrl)
-            .done(effects => {
-              let effectOptions = [];
-              effects.map(effectName => {
-                effectOptions.push({
-                  id: effectId++,
-                  name: effectName,
-                });
-              });
+        if (!effects || effects.length == 0) {
+          RED.notify("No effects found.", "error");
+        }
 
-              // Drop the first item in the list, which is Solid, before sorting. Then sort the list
-              // and add Solid back in at the top as the default.
-              const solid = effectOptions.shift();
-              effectOptions = effectOptions.sort((a, b) => {
-                if (a.name == b.name) return 0;
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-              });
-              effectOptions.unshift(solid);
-
-              resolve(effectOptions);
-            })
-            .fail(e => {
-              reject();
-            });
+        // Drop the first item in the list, which is the default, before sorting. Then sort the list
+        // and add the default back in at the top.
+        const defaultEffect = effects.shift();
+        effects = effects.sort((a, b) => {
+          if (a.name == b.name) return 0;
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
         });
+        effects.unshift(defaultEffect);
+
+        return effects;
       }
 
       async function getSortedPalettes() {
@@ -136,47 +124,34 @@
 
         if (!server) return;
 
-        const restUrl = new URL("/json/palettes", `http://${server}`).toString();
+        // Request the list of palettes from the WLED device via the backend.
+        // This works around https/http issues when running this node in a
+        // NodeRed instance installed on Home Assistant.
+        let palettes = await $.getJSON(`wled2/palettes/${server}`);
 
-        // The effect IDs are the index of the effect in the array, and is what's
-        // sent to select the event.
-        let paletteId = 0;
-        return new Promise((resolve, reject) => {
-          $.getJSON(restUrl)
-            .done(palette => {
-              let paletteOptions = [];
-              palette.map(paletteName => {
-                paletteOptions.push({
-                  id: paletteId++,
-                  name: paletteName,
-                });
-              });
+        if (!palettes || palettes.length == 0) {
+          RED.notify("No effects found.", "error");
+        }
 
-              // Drop the first item in the list, which is Default, before sorting. Then sort the list
-              // and add Default back in at the top as the default.
-              const solid = paletteOptions.shift();
-              paletteOptions = paletteOptions.sort((a, b) => {
-                if (a.name == b.name) return 0;
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-              });
-              paletteOptions.unshift(solid);
-
-              console.log(JSON.stringify(paletteOptions));
-              resolve(paletteOptions);
-            })
-            .fail(e => {
-              reject();
-            });
+        // Drop the first item in the list, which is the default, before sorting. Then sort the list
+        // and add the default back in at the top.
+        const defaultPalette = palettes.shift();
+        palettes = palettes.sort((a, b) => {
+          if (a.name == b.name) return 0;
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
         });
+        palettes.unshift(defaultPalette);
+
+        return palettes;
       }
 
       async function loadDropdowns({ data: { currentEffect, currentPalette } }) {
         // Load the default values
-        populateDropdown("#node-input-effect", defaultEffects);
-        $(`#node-input-effect option[value=${currentEffect}]`).attr("selected", "selected");
-        populateDropdown("#node-input-palette", defaultPalettes);
-        $(`#node-input-palette option[value=${currentPalette}]`).attr("selected", "selected");
+        // populateDropdown("#node-input-effect", defaultEffects);
+        // $(`#node-input-effect option[value=${currentEffect}]`).attr("selected", "selected");
+        // populateDropdown("#node-input-palette", defaultPalettes);
+        // $(`#node-input-palette option[value=${currentPalette}]`).attr("selected", "selected");
 
         // Attempt to retrieve from the WLED device
         const server = $("#node-input-address").val();
@@ -188,16 +163,16 @@
           populateDropdown("#node-input-effect", effects);
           $(`#node-input-effect option[value=${currentEffect}]`).attr("selected", "selected");
         } catch (e) {
-          console.log("Unable to retrieve list of palettes from WLED device. Falling back to defaults.");
+          console.log(`wled2: Unable to retrieve list of effects from WLED device. ${e}`);
         }
 
         // Populate the palettes dropdown from the device directly
         try {
-          const palettes = await getSortedEffects();
+          const palettes = await getSortedPalettes();
           populateDropdown("#node-input-palette", palettes);
           $(`#node-input-palette option[value=${currentPalette}]`).attr("selected", "selected");
         } catch (e) {
-          console.log("Unable to retrieve list of palettes from WLED device. Falling back to defaults.");
+          console.log("wled2: Unable to retrieve list of palettes from WLED device. Falling back to defaults.");
         }
       }
     },
@@ -284,164 +259,4 @@
   </ol>
 </script>
 
-<script type="text/javascript">
-  const defaultEffects = [
-    { id: 0, name: "Solid" },
-    { id: 27, name: "Android" },
-    { id: 1, name: "Blink" },
-    { id: 26, name: "Blink Rainbow" },
-    { id: 91, name: "Bouncing Balls" },
-    { id: 68, name: "Bpm" },
-    { id: 2, name: "Breathe" },
-    { id: 88, name: "Candle" },
-    { id: 102, name: "Candle Multi" },
-    { id: 28, name: "Chase" },
-    { id: 31, name: "Chase Flash" },
-    { id: 32, name: "Chase Flash Rnd" },
-    { id: 30, name: "Chase Rainbow" },
-    { id: 29, name: "Chase Random" },
-    { id: 52, name: "Circus" },
-    { id: 34, name: "Colorful" },
-    { id: 8, name: "Colorloop" },
-    { id: 74, name: "Colortwinkles" },
-    { id: 67, name: "Colorwaves" },
-    { id: 18, name: "Dissolve" },
-    { id: 19, name: "Dissolve Rnd" },
-    { id: 96, name: "Drip" },
-    { id: 7, name: "Dynamic" },
-    { id: 12, name: "Fade" },
-    { id: 69, name: "Fill Noise" },
-    { id: 66, name: "Fire 2012" },
-    { id: 45, name: "Fire Flicker" },
-    { id: 42, name: "Fireworks" },
-    { id: 90, name: "Fireworks 1D" },
-    { id: 89, name: "Fireworks Starburst" },
-    { id: 87, name: "Glitter" },
-    { id: 46, name: "Gradient" },
-    { id: 53, name: "Halloween" },
-    { id: 82, name: "Halloween Eyes" },
-    { id: 100, name: "Heartbeat" },
-    { id: 58, name: "ICU" },
-    { id: 64, name: "Juggle" },
-    { id: 75, name: "Lake" },
-    { id: 41, name: "Lighthouse" },
-    { id: 57, name: "Lightning" },
-    { id: 47, name: "Loading" },
-    { id: 44, name: "Merry Christmas" },
-    { id: 76, name: "Meteor" },
-    { id: 77, name: "Meteor Smooth" },
-    { id: 59, name: "Multi Comet" },
-    { id: 70, name: "Noise 1" },
-    { id: 71, name: "Noise 2" },
-    { id: 72, name: "Noise 3" },
-    { id: 73, name: "Noise 4" },
-    { id: 62, name: "Oscillate" },
-    { id: 101, name: "Pacifica" },
-    { id: 65, name: "Palette" },
-    { id: 98, name: "Percent" },
-    { id: 97, name: "Plasma" },
-    { id: 48, name: "Police" },
-    { id: 49, name: "Police All" },
-    { id: 95, name: "Popcorn" },
-    { id: 63, name: "Pride 2015" },
-    { id: 78, name: "Railway" },
-    { id: 43, name: "Rain" },
-    { id: 9, name: "Rainbow" },
-    { id: 33, name: "Rainbow Runner" },
-    { id: 5, name: "Random Colors" },
-    { id: 38, name: "Red & Blue" },
-    { id: 79, name: "Ripple" },
-    { id: 99, name: "Ripple Rainbow" },
-    { id: 15, name: "Running" },
-    { id: 37, name: "Running 2" },
-    { id: 16, name: "Saw" },
-    { id: 10, name: "Scan" },
-    { id: 11, name: "Scan Dual" },
-    { id: 40, name: "Scanner" },
-    { id: 60, name: "Scanner Dual" },
-    { id: 92, name: "Sinelon" },
-    { id: 93, name: "Sinelon Dual" },
-    { id: 94, name: "Sinelon Rainbow" },
-    { id: 83, name: "Solid Pattern" },
-    { id: 84, name: "Solid Pattern Tri" },
-    { id: 20, name: "Sparkle" },
-    { id: 21, name: "Sparkle Dark" },
-    { id: 22, name: "Sparkle+" },
-    { id: 85, name: "Spots" },
-    { id: 86, name: "Spots Fade" },
-    { id: 39, name: "Stream" },
-    { id: 61, name: "Stream 2" },
-    { id: 23, name: "Strobe" },
-    { id: 25, name: "Strobe Mega" },
-    { id: 24, name: "Strobe Rainbow" },
-    { id: 6, name: "Sweep" },
-    { id: 36, name: "Sweep Random" },
-    { id: 13, name: "Theater" },
-    { id: 14, name: "Theater Rainbow" },
-    { id: 35, name: "Traffic Light" },
-    { id: 54, name: "Tri Chase" },
-    { id: 56, name: "Tri Fade" },
-    { id: 55, name: "Tri Wipe" },
-    { id: 17, name: "Twinkle" },
-    { id: 81, name: "Twinklecat" },
-    { id: 80, name: "Twinklefox" },
-    { id: 51, name: "Two Areas" },
-    { id: 50, name: "Two Dots" },
-    { id: 3, name: "Wipe" },
-    { id: 4, name: "Wipe Random" },
-  ];
-  const defaultPalettes = [
-    { id: 0, name: "Default" },
-    { id: 2, name: "* Color 1" },
-    { id: 4, name: "* Color Gradient" },
-    { id: 3, name: "* Colors 1&2" },
-    { id: 5, name: "* Colors Only" },
-    { id: 1, name: "* Random Cycle" },
-    { id: 18, name: "Analogous" },
-    { id: 46, name: "April Night" },
-    { id: 51, name: "Atlantica" },
-    { id: 50, name: "Aurora" },
-    { id: 39, name: "Autumn" },
-    { id: 26, name: "Beach" },
-    { id: 22, name: "Beech" },
-    { id: 15, name: "Breeze" },
-    { id: 48, name: "C9" },
-    { id: 7, name: "Cloud" },
-    { id: 37, name: "Cyane" },
-    { id: 24, name: "Departure" },
-    { id: 30, name: "Drywet" },
-    { id: 35, name: "Fire" },
-    { id: 10, name: "Forest" },
-    { id: 32, name: "Grintage" },
-    { id: 28, name: "Hult" },
-    { id: 29, name: "Hult 64" },
-    { id: 36, name: "Icefire" },
-    { id: 31, name: "Jul" },
-    { id: 25, name: "Landscape" },
-    { id: 8, name: "Lava" },
-    { id: 38, name: "Light Pink" },
-    { id: 40, name: "Magenta" },
-    { id: 41, name: "Magred" },
-    { id: 9, name: "Ocean" },
-    { id: 44, name: "Orange & Teal" },
-    { id: 47, name: "Orangery" },
-    { id: 6, name: "Party" },
-    { id: 20, name: "Pastel" },
-    { id: 11, name: "Rainbow" },
-    { id: 12, name: "Rainbow Bands" },
-    { id: 16, name: "Red & Blue" },
-    { id: 33, name: "Rewhi" },
-    { id: 14, name: "Rivendell" },
-    { id: 49, name: "Sakura" },
-    { id: 27, name: "Sherbet" },
-    { id: 19, name: "Splash" },
-    { id: 13, name: "Sunset" },
-    { id: 21, name: "Sunset 2" },
-    { id: 34, name: "Tertiary" },
-    { id: 45, name: "Tiamat" },
-    { id: 23, name: "Vintage" },
-    { id: 43, name: "Yelblu" },
-    { id: 17, name: "Yellowout" },
-    { id: 42, name: "Yelmag" },
-  ];
-</script>
+<script type="text/javascript"></script>
