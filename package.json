@@ -15,7 +15,8 @@
   "files": [
     "dist/**/*.js",
     "dist/icons/*",
-    "dist/*.html"
+    "dist/*.html",
+    "dist/defaults/*.json"
   ],
   "scripts": {
     "copy:html": "copyfiles -f src/wled2.html dist",
