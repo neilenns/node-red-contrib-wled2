@@ -12,6 +12,7 @@ export default async function palettes(request: express.Request, response: expre
   if (!request.params.address) {
     console.log("wled2: No address specified to retrieve palette list. Falling back to defaults.");
     response.json(defaultPalettes);
+    return;
   }
 
   try {
@@ -28,10 +29,10 @@ export default async function palettes(request: express.Request, response: expre
         return { id, name } as IWledPalette;
       }),
     );
-
-    response.json(palettes);
+    return;
   } catch (e) {
     console.log(`wled2: Unable to load palettes: ${e}. Falling back to defaults.`);
     response.json(defaultPalettes);
+    return;
   }
 }

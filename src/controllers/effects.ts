@@ -12,6 +12,7 @@ export default async function effects(request: express.Request, response: expres
   if (!request.params.address) {
     console.log("wled2: No address specified to retrieve effects list. Falling back to defaults.");
     response.json(defaultEffects);
+    return;
   }
 
   try {
@@ -30,8 +31,11 @@ export default async function effects(request: express.Request, response: expres
         return { id, name } as IWledEffect;
       }),
     );
+
+    return;
   } catch (e) {
     console.log(`wled2: Unable to load effects: ${e}. Falling back to defaults.`);
     response.json(defaultEffects);
+    return;
   }
 }
