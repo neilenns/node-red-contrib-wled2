@@ -33,10 +33,13 @@ export default class WledNode extends NodeRedNode {
     this.wled.on("connected", () => this.onConnected());
     this.wled.on("disconnected", () => this.onDisconnected());
 
-    this.wled.getState();
+    this.wled.getState().catch(e => {
+      this.error(e);
+      this.onError();
+    });
   }
 
-  private setState(msg: INodeRedMessage): void {
+  private async setState(msg: INodeRedMessage): Promise<void> {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
@@ -67,7 +70,10 @@ export default class WledNode extends NodeRedNode {
       ],
     } as IWledState;
 
-    this.wled.setState(state);
+    await this.wled.setState(state).catch(e => {
+      this.error(e);
+      this.onError();
+    });
 
     // If a delay was requested flip to solid state after the specified number of seconds.
     if (delay) {
@@ -78,20 +84,28 @@ export default class WledNode extends NodeRedNode {
     this.send(msg);
   }
 
-  private setSolidState(on: boolean): void {
-    this.wled.setState({
-      on,
-      seg: [
-        {
-          fx: 0,
-          id: 0,
-        },
-      ],
-    });
+  private async setSolidState(on: boolean): Promise<void> {
+    await this.wled
+      .setState({
+        on,
+        seg: [
+          {
+            fx: 0,
+            id: 0,
+          },
+        ],
+      })
+      .catch(e => {
+        this.error(e);
+        this.onError();
+      });
   }
 
   private onConnected() {
     this.status({ fill: "green", shape: "dot", text: `Connected: ${this.wled.server}` });
+  }
+  private onError() {
+    this.status({ fill: "red", shape: "dot", text: `Error` });
   }
 
   private onDisconnected() {
