@@ -130,7 +130,8 @@
         let palettes = await $.getJSON(`wled2/palettes/${server}`);
 
         if (!palettes || palettes.length == 0) {
-          RED.notify("No effects found.", "error");
+          RED.notify("No palettes found.", "error");
+
         }
 
         // Drop the first item in the list, which is the default, before sorting. Then sort the list
