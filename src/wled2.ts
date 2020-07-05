@@ -8,11 +8,11 @@ import * as helpers from "./helpers";
 import INodeMessage from "./types/INodeMessage";
 import IWledNodeProperties from "./types/IWledNodeProperties";
 import IWledNode from "./types/IWledNode";
+import IWledSegment from "./types/IWledSegment";
+import IWledState from "./types/IWLedState";
 import palettes from "./controllers/palettes";
 import { Red } from "node-red";
 import WledDevice from "./WledDevice";
-import IWledSegment from "./types/IWledSegment";
-import IWledState from "./types/IWLedState";
 
 export = (RED: Red): void => {
   global.RED = RED;
