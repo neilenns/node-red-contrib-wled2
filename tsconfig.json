@@ -5,12 +5,9 @@
     "esModuleInterop": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["src/customTypes"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
