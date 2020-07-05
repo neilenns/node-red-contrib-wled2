@@ -4,32 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 import discover from "./controllers/discover";
 import effects from "./controllers/effects";
-import INodeConfig from "./types/INodeConfig";
 import palettes from "./controllers/palettes";
-import NodeRedNode from "./NodeRedNode";
 import WledNode from "./WledNode";
-
-import * as Express from "express";
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    // tslint:disable-next-line: interface-name
-    interface Global {
-      RED: NodeRed;
-    }
-  }
-}
-
-type NodeRed = {
-  nodes: NodeRedNodes;
-  httpAdmin: Express.Application;
-};
-
-type NodeRedNodes = {
-  createNode(node: NodeRedNode, props: INodeConfig): void;
-  registerType(type: string, ctor: typeof WledNode): void;
-};
+import NodeRed from "./customTypes/nodered";
 
 module.exports = main;
 
