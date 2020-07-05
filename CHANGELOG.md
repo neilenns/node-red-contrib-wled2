@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.4.0 - 2020-07-05
 
 - All logged warnings now report through NodeRed logging systems instead of console logs. Resolves [issue 40](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/40).
 - Corrected the name of the node in package.json. Resolves [issue 42](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/42).
