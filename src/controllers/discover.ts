@@ -7,6 +7,7 @@ import fetch from "node-fetch";
 import IWledDevice from "../types/IWledDevice";
 import IWledDiscoveredDevice from "../types/IWledDiscoveredDevice";
 import mdns from "mdns-server";
+import { RED } from "../nodeGlobals";
 
 const timeout = 4000;
 
@@ -58,10 +59,9 @@ export default async function discover(request: express.Request, response: expre
             version: device.info.version,
           };
 
-          console.log(`wled2: Found a device: ${JSON.stringify(wledDevice)}`);
           wledDevices.push(wledDevice);
         } catch (e) {
-          console.log(`wled2: Failed to request discovered device data: ${e}`);
+          RED.log.warn(`wled2: Failed to request discovered device data: ${e}`);
         }
       });
   });

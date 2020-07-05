@@ -10,12 +10,13 @@ import IWledNodeProperties from "./types/IWledNodeProperties";
 import IWledNode from "./types/IWledNode";
 import IWledSegment from "./types/IWledSegment";
 import IWledState from "./types/IWLedState";
+import * as NodeGlobals from "./nodeGlobals";
 import palettes from "./controllers/palettes";
 import { Red } from "node-red";
 import WledDevice from "./WledDevice";
 
 export = (RED: Red): void => {
-  global.RED = RED;
+  NodeGlobals.setRed(RED);
 
   RED.httpAdmin.get("/wled2/discover", discover);
   RED.httpAdmin.get("/wled2/effects/:address", effects);

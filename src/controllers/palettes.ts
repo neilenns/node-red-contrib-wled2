@@ -6,11 +6,12 @@ import * as express from "express";
 import fetch from "node-fetch";
 import defaultPalettes from "../defaults/palettes.json";
 import IWledPalette from "../types/IWledPalette";
+import { RED } from "../nodeGlobals";
 
 // Queries a WLED device for its list of palettes.
 export default async function palettes(request: express.Request, response: express.Response): Promise<void> {
   if (!request.params.address) {
-    console.log("wled2: No address specified to retrieve palette list. Falling back to defaults.");
+    RED.log.warn("wled2: No address specified to retrieve palette list. Falling back to defaults.");
     response.json(defaultPalettes);
     return;
   }
@@ -31,7 +32,7 @@ export default async function palettes(request: express.Request, response: expre
     );
     return;
   } catch (e) {
-    console.log(`wled2: Unable to load palettes: ${e}. Falling back to defaults.`);
+    RED.log.warn(`wled2: Unable to load palettes: ${e}. Falling back to defaults.`);
     response.json(defaultPalettes);
     return;
   }
