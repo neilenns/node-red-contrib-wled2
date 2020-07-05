@@ -10,12 +10,13 @@ import IWledNodeProperties from "./types/IWledNodeProperties";
 import IWledNode from "./types/IWledNode";
 import IWledSegment from "./types/IWledSegment";
 import IWledState from "./types/IWLedState";
+import * as NodeGlobals from "./nodeGlobals";
 import palettes from "./controllers/palettes";
 import { Red } from "node-red";
 import WledDevice from "./WledDevice";
 
 export = (RED: Red): void => {
-  global.RED = RED;
+  NodeGlobals.setRed(RED);
 
   RED.httpAdmin.get("/wled2/discover", discover);
   RED.httpAdmin.get("/wled2/effects/:address", effects);
@@ -37,7 +38,11 @@ export = (RED: Red): void => {
     this.wled.on("connected", onConnected.bind(this));
     this.wled.on("disconnected", onDisconnected.bind(this));
 
-    this.wled.getState();
+    // On failures the node can just do nothing. Disconnected state
+    // will get set automatically by an event fired from the WledDevice object.
+    this.wled.getState().catch(() => {
+      return;
+    });
   });
 
   async function setState(msg: INodeMessage): Promise<void> {
@@ -71,7 +76,11 @@ export = (RED: Red): void => {
       ],
     } as IWledState;
 
-    await this.wled.setState(state);
+    // On failures the node can just do nothing. Disconnected state
+    // will get set automatically by an event fired from the WledDevice object.
+    await this.wled.setState(state).catch(() => {
+      return;
+    });
 
     // If a delay was requested flip to solid state after the specified number of seconds.
     if (delay) {
@@ -83,15 +92,21 @@ export = (RED: Red): void => {
   }
 
   function setSolidState(on: boolean): void {
-    this.wled.setState({
-      on,
-      seg: [
-        {
-          fx: 0,
-          id: 0,
-        },
-      ],
-    });
+    this.wled
+      .setState({
+        on,
+        seg: [
+          {
+            fx: 0,
+            id: 0,
+          },
+        ],
+      })
+      // On failures the node can just do nothing. Disconnected state
+      // will get set automatically by an event fired from the WledDevice object.
+      .catch(() => {
+        return;
+      });
   }
 
   function onConnected() {

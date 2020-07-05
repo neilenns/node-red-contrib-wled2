@@ -6,11 +6,12 @@ import * as express from "express";
 import fetch from "node-fetch";
 import defaultEffects from "../defaults/effects.json";
 import IWledEffect from "../types/IWledEffect";
+import { RED } from "../nodeGlobals";
 
 // Queries a WLED device for its list of effects.
 export default async function effects(request: express.Request, response: express.Response): Promise<void> {
   if (!request.params.address) {
-    console.log("wled2: No address specified to retrieve effects list. Falling back to defaults.");
+    RED.log.warn("wled2: No address specified to retrieve effects list. Falling back to defaults.");
     response.json(defaultEffects);
     return;
   }
@@ -34,7 +35,7 @@ export default async function effects(request: express.Request, response: expres
 
     return;
   } catch (e) {
-    console.log(`wled2: Unable to load effects: ${e}. Falling back to defaults.`);
+    RED.log.warn(`wled2: Unable to load effects: ${e}. Falling back to defaults.`);
     response.json(defaultEffects);
     return;
   }

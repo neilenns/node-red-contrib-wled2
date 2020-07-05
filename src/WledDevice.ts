@@ -28,8 +28,8 @@ export default class WledDevice extends EventEmitter {
     try {
       this.currentState = (await request.get(uri, { json: true })) as IWledState;
     } catch (e) {
-      console.log(`wled2: Unable to get WLED device state: ${e}`);
       this.setConnectionState(false);
+      throw Error(`Unable to get WLED device state: ${e}`);
     }
 
     // Set the connection status based on the return value.
@@ -54,8 +54,10 @@ export default class WledDevice extends EventEmitter {
     try {
       await request.put(uri, options);
     } catch (e) {
-      console.log(`wled2: Unable to set WLED device state: ${e}`);
+      throw Error(`Unable to set WLED device state: ${e}`);
     }
+
+    this.setConnectionState(true);
   }
 
   private setConnectionState(state: boolean) {
