@@ -2,8 +2,8 @@
  *  Copyright (c) Neil Enns. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import * as request from "request-promise-native";
 import { EventEmitter } from "events";
+import fetch from "node-fetch";
 import IWledState from "./types/IWLedState";
 
 export default class WledDevice extends EventEmitter {
@@ -24,9 +24,14 @@ export default class WledDevice extends EventEmitter {
    * @returns The current state information.
    */
   public async getState(): Promise<void> {
-    const uri = new URL("/json/state", `http://${this.server}`).toString();
+    const response = await fetch(`http://${this.server}/json/state`);
+    if (!response.ok) {
+      this.setConnectionState(false);
+      return;
+    }
+
     try {
-      this.currentState = (await request.get(uri, { json: true })) as IWledState;
+      this.currentState = (await response.json()) as IWledState;
     } catch (e) {
       this.setConnectionState(false);
       throw Error(`Unable to get WLED device state: ${e}`);
@@ -45,15 +50,21 @@ export default class WledDevice extends EventEmitter {
    * @param state The state to send to the WLED device
    */
   public async setState(state: IWledState): Promise<void> {
-    const options = {
-      body: state,
-      json: true,
-    } as request.RequestPromiseOptions;
-
-    const uri = new URL("/json/state", `http://${this.server}`).toString();
     try {
-      await request.put(uri, options);
+      const response = await fetch(`http://${this.server}/json/state`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(state),
+      });
+      if (!response.ok) {
+        this.setConnectionState(false);
+        return;
+      }
     } catch (e) {
+      this.setConnectionState(false);
       throw Error(`Unable to set WLED device state: ${e}`);
     }
 
