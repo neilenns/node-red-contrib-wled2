@@ -36,9 +36,11 @@ export = (RED: Red): void => {
 
     this.on("input", setState.bind(this));
     this.wled.on("connected", onConnected.bind(this));
+    this.wled.on("connecting", onConnecting.bind(this));
     this.wled.on("disconnected", onDisconnected.bind(this));
+    this.wled.on("error", onError.bind(this));
 
-    // On failures the node can just do nothing. Disconnected state
+    // On failures the node can just do nothing. Error state
     // will get set automatically by an event fired from the WledDevice object.
     this.wled.getState().catch(e => {
       this.error(`Unable to get state at startup: ${e}`);
@@ -60,8 +62,10 @@ export = (RED: Red): void => {
     // First off determine if the behaviour for on comes from the payload or the config.
     // This is what the light will ultimately wind up being. True for on, false for off.
     let targetState: boolean;
-    // This is what the node was requested to do. It could be "on", "off", or "toggle".
-    const requestedState = payload.state ?? this.config.state;
+    // This is what the node was requested to do. It could be "on", "off", "toggle", or
+    // undefined. In the undefined case assume "on" is desired so other properties like
+    // the effect or colour can be applied.
+    const requestedState = payload.state ?? this.config.state ?? "on";
 
     // Second step is to get the current state of the light if toggle was requested and
     // set the target state to the opposite of that.
@@ -108,7 +112,7 @@ export = (RED: Red): void => {
       ],
     } as IWledState;
 
-    // On failures the node can just do nothing. Disconnected state
+    // On failures the node can just do nothing. Error state
     // will get set automatically by an event fired from the WledDevice object.
     await this.wled.setState(state).catch(() => {
       return;
@@ -134,7 +138,7 @@ export = (RED: Red): void => {
           },
         ],
       })
-      // On failures the node can just do nothing. Disconnected state
+      // On failures the node can just do nothing. Error state
       // will get set automatically by an event fired from the WledDevice object.
       .catch(() => {
         return;
@@ -142,10 +146,28 @@ export = (RED: Red): void => {
   }
 
   function onConnected(this: IWledNode) {
-    this.status({ fill: "green", shape: "dot", text: `Connected: ${this.config.address}` });
+    this.status({ fill: "green", shape: "dot", text: `Connected to ${this.config.address}` });
+  }
+
+  function onConnecting(this: IWledNode) {
+    this.status({ fill: "yellow", shape: "dot", text: `Connecting to ${this.config.address}` });
   }
 
   function onDisconnected(this: IWledNode) {
     this.status({ fill: "red", shape: "dot", text: "Disconnected" });
+  }
+
+  function onError(this: IWledNode) {
+    this.status({ fill: "red", shape: "dot", text: `Error at ${getPrettyDate()}` });
+  }
+
+  function getPrettyDate() {
+    return new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour12: false,
+      hour: "numeric",
+      minute: "numeric",
+    });
   }
 };

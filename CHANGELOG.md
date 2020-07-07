@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add a Connecting and Error state that shows under the node. Resolves [issue 53](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/53).
+
 ## v2.0.0 - 2020-07-06
 
 ### Breaking changes
