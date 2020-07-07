@@ -9,13 +9,12 @@ import IWledState from "./types/IWLedState";
 export default class WledDevice extends EventEmitter {
   public server: string;
 
-  private isConnected: boolean;
   private currentState: IWledState;
 
   constructor(init?: Partial<WledDevice>) {
     super();
     Object.assign(this, init);
-    this.setConnectionState(false);
+    this.setConnectedState(false);
   }
 
   /**
@@ -24,24 +23,29 @@ export default class WledDevice extends EventEmitter {
    * @returns The current state information.
    */
   public async getState(): Promise<void> {
-    const response = await fetch(`http://${this.server}/json/state`);
+    this.setConnectingState();
+    const response = await fetch(`http://${this.server}/json/state`).catch(e => {
+      this.setErrorState();
+      throw e;
+    });
+
     if (!response.ok) {
-      this.setConnectionState(false);
+      this.setErrorState();
       return;
     }
 
     try {
       this.currentState = (await response.json()) as IWledState;
     } catch (e) {
-      this.setConnectionState(false);
+      this.setErrorState();
       throw Error(`Unable to get WLED device state: ${e}`);
     }
 
     // Set the connection status based on the return value.
     if (this.currentState) {
-      this.setConnectionState(true);
+      this.setConnectedState(true);
     } else {
-      this.setConnectionState(false);
+      this.setErrorState();
     }
   }
 
@@ -52,7 +56,6 @@ export default class WledDevice extends EventEmitter {
    */
   public async getCurrentOnState(): Promise<boolean> {
     await this.getState().catch(e => {
-      this.setConnectionState(false);
       throw e;
     });
     return this.currentState.on;
@@ -64,6 +67,7 @@ export default class WledDevice extends EventEmitter {
    */
   public async setState(state: IWledState): Promise<void> {
     try {
+      this.setConnectingState();
       const response = await fetch(`http://${this.server}/json/state`, {
         method: "POST",
         headers: {
@@ -73,21 +77,26 @@ export default class WledDevice extends EventEmitter {
         body: JSON.stringify(state),
       });
       if (!response.ok) {
-        this.setConnectionState(false);
+        this.setErrorState();
         return;
       }
     } catch (e) {
-      this.setConnectionState(false);
+      this.setErrorState();
       throw Error(`Unable to set WLED device state: ${e}`);
     }
 
-    this.setConnectionState(true);
+    this.setConnectedState(true);
   }
 
-  private setConnectionState(state: boolean) {
-    if (this.isConnected !== state) {
-      this.isConnected = state;
-    }
-    this.emit(this.isConnected ? "connected" : "disconnected");
+  private setConnectingState() {
+    this.emit("connecting");
+  }
+
+  private setConnectedState(state: boolean) {
+    this.emit(state ? "connected" : "disconnected");
+  }
+
+  private setErrorState() {
+    this.emit("error");
   }
 }

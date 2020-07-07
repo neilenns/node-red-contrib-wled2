@@ -5,6 +5,7 @@
     "Tasmota",
     "Wled",
     "additionals",
+    "behaviour",
     "copyfiles",
     "dnssd",
     "mdns",
