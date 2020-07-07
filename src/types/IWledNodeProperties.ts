@@ -14,7 +14,7 @@ export default interface IWledNodeProperties extends NodeProperties {
   effectIntensity: number;
   effectSpeed: number;
   name: string;
-  on: string;
+  state: string;
   delay: number;
   palette: number;
 }

@@ -14,7 +14,7 @@
       effectSpeed: { value: 128 },
       name: { value: "" },
       palette: { value: "0" },
-      on: { value: "true", required: true },
+      on: { value: "on" },
     },
     inputs: 1,
     outputs: 1,
@@ -31,11 +31,6 @@
       $("#node-input-delay").typedInput({
         type: "num",
         types: ["num"],
-      });
-
-      $("#node-input-on").typedInput({
-        type: "bool",
-        types: ["bool"],
       });
 
       $("#node-config-discover").click(function() {
@@ -190,8 +185,12 @@
       </div>
     </div>
     <div class="form-row">
-      <label for="node-input-on"><i class="icon-tag"></i> On</label>
-      <input type="text" id="node-input-on" placeholder="true">
+      <label for="node-input-state"><i class="icon-tag"></i> State</label>
+      <select id="node-input-state">
+        <option value="on">on</option>
+        <option value="off">off</option>
+        <option value="toggle">toggle</option>
+      </select>
     </div>
     <div class="form-row">
       <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>

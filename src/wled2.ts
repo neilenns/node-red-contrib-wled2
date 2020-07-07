@@ -40,12 +40,13 @@ export = (RED: Red): void => {
 
     // On failures the node can just do nothing. Disconnected state
     // will get set automatically by an event fired from the WledDevice object.
-    this.wled.getState().catch(() => {
+    this.wled.getState().catch(e => {
+      this.error(`Unable to get state at startup: ${e}`);
       return;
     });
   });
 
-  async function setState(msg: INodeMessage): Promise<void> {
+  async function setState(this: IWledNode, msg: INodeMessage): Promise<void> {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
@@ -54,9 +55,40 @@ export = (RED: Red): void => {
     const delay = payload.delay ?? Number(this.config.delay) ?? 0;
 
     // The on status is funky. If off is requested and a delay is set the request is really to run
-    // the effect for the delayed period and then set off.
-    const requestedState = payload.on ?? (this.config.on ? JSON.parse(this.config.on) : undefined);
-    const on = delay ? true : requestedState;
+    // the effect for the delayed period and then set off. Also have to handle toggle state.
+
+    // First off determine if the behaviour for on comes from the payload or the config.
+    // This is what the light will ultimately wind up being. True for on, false for off.
+    let targetState: boolean;
+    // This is what the node was requested to do. It could be "on", "off", or "toggle".
+    const requestedState = payload.state ?? this.config.state;
+
+    // Second step is to get the current state of the light if toggle was requested and
+    // set the target state to the opposite of that.
+    try {
+      if (requestedState.toLowerCase() === "toggle") {
+        targetState = !(await this.wled.getCurrentOnState().catch(e => {
+          throw Error(`Unable to obtain current device on state to perform toggle: ${e}`);
+        }));
+      }
+      // If toggle wasn't requested the targetState is true if "on" was requested and false
+      // for any other value.
+      else {
+        targetState = requestedState.toLowerCase() === "on";
+      }
+    } catch (e) {
+      // This means the current on state couldn't be retrieved so just give up.
+      this.error(e);
+      return;
+    }
+
+    // If the targetState couldn't be obtained for toggle then bail as failed.
+    if (targetState == null) return;
+
+    // Third step is to actually set the on state to what it should be in the initial WLED call, taking into
+    // account the delay. If there's a delay the state is always "on" to play the effect before switching to
+    // the desired state.
+    const on = delay ? true : targetState;
 
     const state = {
       on,
@@ -84,14 +116,14 @@ export = (RED: Red): void => {
 
     // If a delay was requested flip to solid state after the specified number of seconds.
     if (delay) {
-      this.solidTimer = setTimeout(setSolidState.bind(this), delay * 1000, requestedState);
+      this.solidTimer = setTimeout(setSolidState.bind(this), delay * 1000, targetState);
     }
 
     // Pass the message on
     this.send(msg);
   }
 
-  function setSolidState(on: boolean): void {
+  function setSolidState(this: IWledNode, on: boolean): void {
     this.wled
       .setState({
         on,
@@ -109,11 +141,11 @@ export = (RED: Red): void => {
       });
   }
 
-  function onConnected() {
+  function onConnected(this: IWledNode) {
     this.status({ fill: "green", shape: "dot", text: `Connected: ${this.config.address}` });
   }
 
-  function onDisconnected() {
+  function onDisconnected(this: IWledNode) {
     this.status({ fill: "red", shape: "dot", text: "Disconnected" });
   }
 };

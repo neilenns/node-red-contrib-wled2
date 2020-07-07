@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Breaking changes
+
+- Toggling the lights on/off based on current LED state is now supported. This is done with the new `state` property which replaces the `on` property.
+  Valid values are `on`, `off`, and `toggle`. The `delay` feature is supported for toggling as well and will correctly play the effect for the specified
+  duration before toggling the light state. Resolves [issue 52](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/52).
+
 ## v1.4.0 - 2020-07-05
 
 - All logged warnings now report through NodeRed logging systems instead of console logs. Resolves [issue 40](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/40).

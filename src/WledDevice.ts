@@ -46,6 +46,19 @@ export default class WledDevice extends EventEmitter {
   }
 
   /**
+   * Gets the current on state for a WLED device. Basically the same
+   * as getting the state, but only returning a single property.
+   * @returns True if the light is on, false otherwise.
+   */
+  public async getCurrentOnState(): Promise<boolean> {
+    await this.getState().catch(e => {
+      this.setConnectionState(false);
+      throw e;
+    });
+    return this.currentState.on;
+  }
+
+  /**
    * Sets a WLED device's state
    * @param state The state to send to the WLED device
    */
