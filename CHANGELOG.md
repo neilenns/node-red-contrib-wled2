@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased
+## v2.1.0 - 2020-07-19
 
+- Address a low-priority security vulnerability in a 3rd party libary. Resolves [issue 59](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/59).
 - Add a Connecting and Error state that shows under the node. Resolves [issue 53](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/53).
 
 ## v2.0.0 - 2020-07-06
