@@ -96,6 +96,7 @@ export = (RED: Red): void => {
 
     const state = {
       on,
+      bri: payload.brightness ?? Number(this.config.brightness),
       seg: [
         {
           col: [

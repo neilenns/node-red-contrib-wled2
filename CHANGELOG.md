@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.2 - 2020-08-12
+
+- Brightness works now. Resolves [issue 64](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/59).
+
 ## v2.1.1 - 2020-08-04
 
 - The off and toggle states can now be set correctly on the node. Resolves [issue 62](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/59).
