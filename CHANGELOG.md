@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1.3 - 2020-09-12
+
+- Address a security vulnerability in an underlying package used by the node. Resolves [issue 68](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/68).
+
 ## v2.1.2 - 2020-08-12
 
 - Brightness works now. Resolves [issue 64](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/59).
