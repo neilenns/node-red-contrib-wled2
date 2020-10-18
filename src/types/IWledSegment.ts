@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 export default interface IWledSegment {
-  id: number;
+  id?: number;
   start?: number;
   stop?: number;
   len?: number;

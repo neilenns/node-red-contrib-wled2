@@ -97,20 +97,17 @@ export = (RED: Red): void => {
     const state = {
       on,
       bri: payload.brightness ?? Number(this.config.brightness),
-      seg: [
-        {
-          col: [
-            payload.color1 ?? helpers.hexToRgb(this.config.color1),
-            payload.color2 ?? helpers.hexToRgb(this.config.color2),
-            payload.color3 ?? helpers.hexToRgb(this.config.color3),
-          ],
-          fx: payload.effect ?? Number(this.config.effect),
-          id: 0,
-          ix: payload.effectIntensity ?? Number(this.config.effectIntensity),
-          pal: payload.palette ?? Number(this.config.palette),
-          sx: payload.effectSpeed ?? Number(this.config.effectSpeed),
-        } as IWledSegment,
-      ],
+      seg: {
+        col: [
+          payload.color1 ?? helpers.hexToRgb(this.config.color1),
+          payload.color2 ?? helpers.hexToRgb(this.config.color2),
+          payload.color3 ?? helpers.hexToRgb(this.config.color3),
+        ],
+        fx: payload.effect ?? Number(this.config.effect),
+        ix: payload.effectIntensity ?? Number(this.config.effectIntensity),
+        pal: payload.palette ?? Number(this.config.palette),
+        sx: payload.effectSpeed ?? Number(this.config.effectSpeed),
+      } as IWledSegment,
     } as IWledState;
 
     // On failures the node can just do nothing. Error state
