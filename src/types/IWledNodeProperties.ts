@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { NodeProperties } from "node-red";
+import IWledSegment from "./IWledSegment";
 
 export default interface IWledNodeProperties extends NodeProperties {
   address: string;
@@ -17,4 +18,5 @@ export default interface IWledNodeProperties extends NodeProperties {
   state: string;
   delay: number;
   palette: number;
+  seg?: IWledSegment[];
 }
