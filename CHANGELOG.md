@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.1.4 - 2020-10-18
+
+- Adjust how messages are sent to WLED so all segments are affected instead of just the first. Thanks to [Daniel Evans](https://github.com/daredoes)
+  for the bug fix. Resolves [issue 72](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/72).
+
 ## v2.1.3 - 2020-09-12
 
 - Address a security vulnerability in an underlying package used by the node. Resolves [issue 68](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/68).
