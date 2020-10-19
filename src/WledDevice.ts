@@ -62,6 +62,30 @@ export default class WledDevice extends EventEmitter {
   }
 
   /**
+   * Gets the current sync send state for a WLED device. Basically the same
+   * as getting the state, but only returning a single property.
+   * @returns True if sync send is on, false otherwise.
+   */
+  public async getCurrentSyncSendState(): Promise<boolean> {
+    await this.getState().catch(e => {
+      throw e;
+    });
+    return this.currentState.udpn.send;
+  }
+
+  /**
+   * Gets the current sync receive state for a WLED device. Basically the same
+   * as getting the state, but only returning a single property.
+   * @returns True if sync send is on, false otherwise.
+   */
+  public async getCurrentSyncReceiveState(): Promise<boolean> {
+    await this.getState().catch(e => {
+      throw e;
+    });
+    return this.currentState.udpn.recv;
+  }
+
+  /**
    * Sets a WLED device's state
    * @param state The state to send to the WLED device
    */

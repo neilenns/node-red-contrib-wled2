@@ -15,6 +15,8 @@
       name: { value: "" },
       palette: { value: "0" },
       state: { value: "on" },
+      syncSend: { value: "off" },
+      syncReceive: { value: "on" }
     },
     inputs: 1,
     outputs: 1,
@@ -220,14 +222,29 @@
     <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
     <input type="range" id="node-input-effectIntensity" min="0" max="255">
   </div>
-
-    <div class="form-row">
+  <div class="form-row">
       <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
       <select id="node-input-palette"></select>
   </div>
   <div class="form-row">
     <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
     <input type="text" id="node-input-delay" placeholder="0">
+  </div>
+  <div class="form-row">
+    <label for="node-input-syncSend"><i class="icon-tag"></i> Sync with other WLED devices (send)</label>
+    <select id="node-input-syncSend">
+      <option value="on">on</option>
+      <option value="off">off</option>
+      <option value="toggle">toggle</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label for="node-input-syncReceive"><i class="icon-tag"></i> Sync with other WLED devices (receive)</label>
+    <select id="node-input-syncReceive">
+      <option value="on">on</option>
+      <option value="off">off</option>
+      <option value="toggle">toggle</option>
+    </select>
   </div>
 </script>
 

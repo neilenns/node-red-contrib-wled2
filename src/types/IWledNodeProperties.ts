@@ -19,4 +19,6 @@ export default interface IWledNodeProperties extends NodeProperties {
   delay: number;
   palette: number;
   seg?: IWledSegment[];
+  syncSend: string;
+  syncReceive: string;
 }
