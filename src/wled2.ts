@@ -54,7 +54,7 @@ export = (RED: Red): void => {
 
     const { payload }: { payload: IWledNodeProperties } = msg;
 
-    const delay = payload.delay ?? Number(this.config.delay) ?? 0;
+    const delay = payload?.delay ?? Number(this.config.delay) ?? 0;
 
     // The on status is funky. If off is requested and a delay is set the request is really to run
     // the effect for the delayed period and then set off. Also have to handle toggle state.
@@ -65,7 +65,7 @@ export = (RED: Red): void => {
     // This is what the node was requested to do. It could be "on", "off", "toggle", or
     // undefined. In the undefined case assume "on" is desired so other properties like
     // the effect or colour can be applied.
-    const requestedState = payload.state ?? this.config.state ?? "on";
+    const requestedState = payload?.state ?? this.config.state ?? "on";
 
     // Second step is to get the current state of the light if toggle was requested and
     // set the target state to the opposite of that.
@@ -96,19 +96,28 @@ export = (RED: Red): void => {
 
     const state = {
       on,
-      bri: payload.brightness ?? Number(this.config.brightness),
-      seg: {
-        col: [
-          payload.color1 ?? helpers.hexToRgb(this.config.color1),
-          payload.color2 ?? helpers.hexToRgb(this.config.color2),
-          payload.color3 ?? helpers.hexToRgb(this.config.color3),
-        ],
-        fx: payload.effect ?? Number(this.config.effect),
-        ix: payload.effectIntensity ?? Number(this.config.effectIntensity),
-        pal: payload.palette ?? Number(this.config.palette),
-        sx: payload.effectSpeed ?? Number(this.config.effectSpeed),
-      } as IWledSegment,
+      bri: payload?.brightness ?? Number(this.config.brightness),
     } as IWledState;
+
+    // Multi-segment support is provided via the incoming payload. If the
+    // seg object is specified in the payload then it's what gets used
+    // to set the entire segment object. Otherwise the individual
+    // properties are set manually.
+    if (payload?.seg) {
+      state.seg = payload.seg;
+    } else {
+      state.seg = {
+        col: [
+          payload?.color1 ?? helpers.hexToRgb(this.config.color1),
+          payload?.color2 ?? helpers.hexToRgb(this.config.color2),
+          payload?.color3 ?? helpers.hexToRgb(this.config.color3),
+        ],
+        fx: payload?.effect ?? Number(this.config.effect),
+        ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
+        pal: payload?.palette ?? Number(this.config.palette),
+        sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
+      } as IWledSegment;
+    }
 
     // On failures the node can just do nothing. Error state
     // will get set automatically by an event fired from the WledDevice object.
