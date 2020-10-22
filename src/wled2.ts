@@ -99,6 +99,8 @@ export = (RED: Red): void => {
       bri: payload?.brightness ?? Number(this.config.brightness),
     } as IWledState;
 
+    const effect = Number(await getEffectFromString(this.config.address, payload?.effect, this.config.effect));
+
     // Multi-segment support is provided via the incoming payload. If the
     // seg object is specified in the payload then it's what gets used
     // to set the entire segment object. Otherwise the individual
@@ -112,7 +114,7 @@ export = (RED: Red): void => {
           payload?.color2 ?? helpers.hexToRgb(this.config.color2),
           payload?.color3 ?? helpers.hexToRgb(this.config.color3),
         ],
-        fx: payload?.effect ?? Number(this.config.effect),
+        fx: effect != -1 ? effect : null,
         ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
         pal: payload?.palette ?? Number(this.config.palette),
         sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
@@ -132,6 +134,29 @@ export = (RED: Red): void => {
 
     // Pass the message on
     this.send(msg);
+  }
+
+  async function getEffectFromString(address: string, payloadEffect: string | number | null, configEffect: string | number | null) {
+    if (typeof payloadEffect === 'number') return payloadEffect;
+    try {
+      const result = await fetch(`http://${address}/json/effects`);
+      if (!result.ok) {
+        return -1;
+      }
+      // Get all the effects
+      const rawEffects = (await result.json()) as string[];
+      const payloadEffectIndex = rawEffects.indexOf(String(payloadEffect));
+      if (payloadEffectIndex != -1) {
+        return payloadEffectIndex
+      }
+      if (typeof configEffect === 'number') {
+        return configEffect;
+      }
+      return rawEffects.indexOf(String(configEffect));
+    } catch (e) {
+      RED.log.warn(`wled2: Unable to load effects: ${e}. Skipping effect.`);
+      return -1;
+    }
   }
 
   function setSolidState(this: IWledNode, on: boolean): void {
