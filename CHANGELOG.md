@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.2.1 - 2020-10-23
+
+- Effects can now be set by passing in the exact name as part of the payload. Resolves [issue 76](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/76).
+
 ## v2.2.0 - 2020-10-18
 
 - Segments can now be set by passing in `seg` as part of the payload following the JSON format described in the [WLED JSON API documentation](https://github.com/Aircoookie/WLED/wiki/JSON-API#setting-new-values) for segments. Resolves [issue 61](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/61).
