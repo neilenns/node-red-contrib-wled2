@@ -11,7 +11,7 @@ export default interface IWledNodeProperties extends NodeProperties {
   color1: string; // Comes in as #aabbcc
   color2: string; // Comes in as #aabbcc
   color3: string; // Comes in as #aabbcc
-  effect: number | string;
+  effect: number;
   effectIntensity: number;
   effectSpeed: number;
   name: string;
