@@ -1,8 +1,9 @@
 # Changelog
 
-## v2.2.1 - 2020-10-23
+## v.2.3.0 - 2020-11-14
 
-- Effects can now be set by passing in the exact name as part of the payload. Resolves [issue 76](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/76).
+- Presets can now be selected by passing `preset` as part of the payload or by picking the preset number from the dropdown
+  in the node UI. Resolves [issue 81](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/81).
 
 ## v2.2.0 - 2020-10-18
 
