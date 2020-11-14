@@ -8,4 +8,6 @@ export default interface IWledState {
   on?: boolean;
   effect?: number;
   seg?: IWledSegment | IWledSegment[];
+  ps?: number;
+  bri?: number;
 }

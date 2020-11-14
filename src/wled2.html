@@ -14,6 +14,7 @@
       effectSpeed: { value: 128 },
       name: { value: "" },
       palette: { value: "0" },
+      preset: { value: "" },
       state: { value: "on" },
     },
     inputs: 1,
@@ -169,66 +170,88 @@
 </script>
 
 <script type="text/html" data-template-name="wled2">
-    <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
-    </div>
-    <div class="form-row">
-      <label for="node-input-address"><i class="icon-server"></i> WLED server</label>
-      <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
-        <div style="position: absolute; left: 0px; right: 40px;">
-          <input type="text" id="node-input-address" placeholder="127.0.0.1" style="width: 100%">
-        </div>
-        <a id="node-config-discover" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
-          <i class="fa fa-search"></i>
-        </a>
+      <div class="form-row">
+          <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+          <input type="text" id="node-input-name" placeholder="Name">
       </div>
+      <div class="form-row">
+        <label for="node-input-address"><i class="icon-server"></i> WLED server</label>
+        <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+          <div style="position: absolute; left: 0px; right: 40px;">
+            <input type="text" id="node-input-address" placeholder="127.0.0.1" style="width: 100%">
+          </div>
+          <a id="node-config-discover" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+            <i class="fa fa-search"></i>
+          </a>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="node-input-state"><i class="icon-tag"></i> State</label>
+        <select id="node-input-state">
+          <option value="on">on</option>
+          <option value="off">off</option>
+          <option value="toggle">toggle</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>
+        <input type="range" id="node-input-brightness" min="1" max="255">
+      </div>
+      <div class="form-row">
+        <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
+        <input type="color" id="node-input-color1">
+      </div>
+      <div class="form-row">
+        <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
+        <input type="color" id="node-input-color2">
+      </div>
+      <div class="form-row">
+        <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
+        <input type="color" id="node-input-color3">
+      </div>
+      <div class="form-row">
+        <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
+        <select id="node-input-effect"></select>
     </div>
     <div class="form-row">
-      <label for="node-input-state"><i class="icon-tag"></i> State</label>
-      <select id="node-input-state">
-        <option value="on">on</option>
-        <option value="off">off</option>
-        <option value="toggle">toggle</option>
-      </select>
+      <label for="node-input-effectSpeed"><i class="icon-tag"></i> Effect speed</label>
+      <input type="range" id="node-input-effectSpeed" min="0" max="255">
     </div>
     <div class="form-row">
-      <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>
-      <input type="range" id="node-input-brightness" min="1" max="255">
+      <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
+      <input type="range" id="node-input-effectIntensity" min="0" max="255">
     </div>
-    <div class="form-row">
-      <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
-      <input type="color" id="node-input-color1">
-    </div>
-    <div class="form-row">
-      <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
-      <input type="color" id="node-input-color2">
-    </div>
-    <div class="form-row">
-      <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
-      <input type="color" id="node-input-color3">
-    </div>
-    <div class="form-row">
-      <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
-      <select id="node-input-effect"></select>
-  </div>
-  <div class="form-row">
-    <label for="node-input-effectSpeed"><i class="icon-tag"></i> Effect speed</label>
-    <input type="range" id="node-input-effectSpeed" min="0" max="255">
-  </div>
-  <div class="form-row">
-    <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
-    <input type="range" id="node-input-effectIntensity" min="0" max="255">
-  </div>
 
+      <div class="form-row">
+        <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
+        <select id="node-input-palette"></select>
+    </div>
     <div class="form-row">
-      <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
-      <select id="node-input-palette"></select>
+      <label for="node-input-preset"><i class="icon-tag"></i> Preset</label>
+      <select id="node-input-preset">
+        <option value="">None</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
   </div>
   <div class="form-row">
-    <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
-    <input type="text" id="node-input-delay" placeholder="0">
-  </div>
+      <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
+      <input type="text" id="node-input-delay" placeholder="0">
+    </div>
 </script>
 
 <script type="text/html" data-help-name="wled2">
