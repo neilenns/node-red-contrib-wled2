@@ -96,27 +96,33 @@ export = (RED: Red): void => {
 
     const state = {
       on,
-      bri: payload?.brightness ?? Number(this.config.brightness),
     } as IWledState;
 
-    // Multi-segment support is provided via the incoming payload. If the
-    // seg object is specified in the payload then it's what gets used
-    // to set the entire segment object. Otherwise the individual
-    // properties are set manually.
-    if (payload?.seg) {
-      state.seg = payload.seg;
+    // If a preset was set then that overrides everything else
+    if (payload?.preset || this.config.preset) {
+      state.ps = payload?.preset ?? Number(this.config.preset);
     } else {
-      state.seg = {
-        col: [
-          payload?.color1 ?? helpers.hexToRgb(this.config.color1),
-          payload?.color2 ?? helpers.hexToRgb(this.config.color2),
-          payload?.color3 ?? helpers.hexToRgb(this.config.color3),
-        ],
-        fx: payload?.effect ?? Number(this.config.effect),
-        ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
-        pal: payload?.palette ?? Number(this.config.palette),
-        sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
-      } as IWledSegment;
+      state.bri = payload?.brightness ?? Number(this.config.brightness);
+
+      // Multi-segment support is provided via the incoming payload. If the
+      // seg object is specified in the payload then it's what gets used
+      // to set the entire segment object. Otherwise the individual
+      // properties are set manually.
+      if (payload?.seg) {
+        state.seg = payload.seg;
+      } else {
+        state.seg = {
+          col: [
+            payload?.color1 ?? helpers.hexToRgb(this.config.color1),
+            payload?.color2 ?? helpers.hexToRgb(this.config.color2),
+            payload?.color3 ?? helpers.hexToRgb(this.config.color3),
+          ],
+          fx: payload?.effect ?? Number(this.config.effect),
+          ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
+          pal: payload?.palette ?? Number(this.config.palette),
+          sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
+        } as IWledSegment;
+      }
     }
 
     // On failures the node can just do nothing. Error state
