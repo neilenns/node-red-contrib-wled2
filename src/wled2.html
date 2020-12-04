@@ -14,7 +14,7 @@
       effectSpeed: { value: 128 },
       name: { value: "" },
       palette: { value: "0" },
-      preset: { value: "" },
+      preset: { value: null },
       state: { value: "on" },
     },
     inputs: 1,
@@ -228,25 +228,7 @@
     </div>
     <div class="form-row">
       <label for="node-input-preset"><i class="icon-tag"></i> Preset</label>
-      <select id="node-input-preset">
-        <option value="">None</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-      </select>
+      <input type="number" step="1" min="1" max="65535" id="node-input-preset" />
   </div>
   <div class="form-row">
       <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>

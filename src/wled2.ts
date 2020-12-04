@@ -23,7 +23,7 @@ export = (RED: Red): void => {
   RED.httpAdmin.get("/wled2/palettes/:address", palettes);
   RED.nodes.registerType("wled2", function(this: IWledNode, props: IWledNodeProperties) {
     this.config = props as IWledNodeProperties;
-
+    console.log(this.config)
     RED.nodes.createNode(this, props);
 
     // When this is loaded for the node palette there's no address
@@ -48,13 +48,93 @@ export = (RED: Red): void => {
     });
   });
 
+  function which(val1: any, val2: any): any {
+    return val1 ? val1 : val2 ? val2 : undefined;
+  }
+
+  function getMergedPayloadAndConfig(payload: IWledNodeProperties, config: IWledNodeProperties): IWledNodeProperties {
+    const mergedProperties = {
+      name: "N/A"
+    } as IWledNodeProperties
+    mergedProperties.address = which(payload.address, config.address)
+    mergedProperties.brightness = which(payload.brightness, payload.brightness);
+    mergedProperties.color1 = which(payload.color1, config.color1)
+    mergedProperties.color2 = which(payload.color2, config.color2)
+    mergedProperties.color3 = which(payload.color3, config.color3)
+    mergedProperties.delay = which(payload.delay, config.delay)
+    mergedProperties.effect = which(payload.effect, config.effect)
+    mergedProperties.effectIntensity = which(payload.effectIntensity, config.effectIntensity)
+    mergedProperties.effectSpeed = which(payload.effectSpeed, config.effectSpeed)
+    mergedProperties.palette = which(payload.palette, config.palette)
+    mergedProperties.preset = which(payload.preset, config.preset)
+    mergedProperties.state = which(payload.state, config.state)
+    mergedProperties.seg = which(payload.seg, config.seg)
+    return mergedProperties
+  }
+
+  function convertPayloadToState(payload: IWledNodeProperties): IWledState {
+    const state = {} as IWledState;
+
+    // If a preset was set then that overrides everything else
+    if (payload.preset) {
+      state.ps = payload.preset;
+    } else {
+      if (payload.brightness) {
+        state.bri = payload.brightness;
+      }
+
+      // Multi-segment support is provided via the incoming payload. If the
+      // seg object is specified in the payload then it's what gets used
+      // to set the entire segment object. Otherwise the individual
+      // properties are set manually.
+      if (payload.seg) {
+        state.seg = payload.seg;
+      } else {
+        const seg = {} as IWledSegment
+        if (payload.color1 || payload.color2 || payload.color3) {
+          const col = [];
+          if (payload.color1) {
+            col.push(helpers.hexToRgb(payload.color1))
+          }
+          if (payload.color2) {
+            col.push(helpers.hexToRgb(payload.color2))
+          }
+          if (payload.color3) {
+            col.push(helpers.hexToRgb(payload.color3))
+          }
+          seg.col = col
+        }
+
+        if (payload.effect) {
+          seg.fx = payload.effect
+        }
+
+        if (payload.effectIntensity) {
+          seg.ix = payload.effectIntensity
+        }
+
+        if (payload.palette) {
+          seg.pal = payload.palette
+        }
+
+        if (payload.effectSpeed) {
+          seg.sx = payload.effectSpeed
+        }
+        state.seg = seg;
+      }
+    }
+    return state
+  }
+
   async function setState(this: IWledNode, msg: INodeMessage): Promise<void> {
     // Any setting of state stops any prior delayed attempt to set the state to solid
     clearTimeout(this.solidTimer);
 
     const { payload }: { payload: IWledNodeProperties } = msg;
 
-    const delay = payload?.delay ?? Number(this.config.delay) ?? 0;
+    const mergedPayload = getMergedPayloadAndConfig(payload || {} as IWledNodeProperties, this.config);
+
+    const delay = mergedPayload.delay ?? 0;
 
     // The on status is funky. If off is requested and a delay is set the request is really to run
     // the effect for the delayed period and then set off. Also have to handle toggle state.
@@ -65,20 +145,22 @@ export = (RED: Red): void => {
     // This is what the node was requested to do. It could be "on", "off", "toggle", or
     // undefined. In the undefined case assume "on" is desired so other properties like
     // the effect or colour can be applied.
-    const requestedState = payload?.state ?? this.config.state ?? "on";
+    const requestedState = mergedPayload.state;
 
     // Second step is to get the current state of the light if toggle was requested and
     // set the target state to the opposite of that.
     try {
-      if (requestedState.toLowerCase() === "toggle") {
-        targetState = !(await this.wled.getCurrentOnState().catch(e => {
-          throw Error(`Unable to obtain current device on state to perform toggle: ${e}`);
-        }));
-      }
-      // If toggle wasn't requested the targetState is true if "on" was requested and false
-      // for any other value.
-      else {
-        targetState = requestedState.toLowerCase() === "on";
+      if (requestedState) {
+        if (requestedState.toLowerCase() === "toggle") {
+          targetState = !(await this.wled.getCurrentOnState().catch(e => {
+            throw Error(`Unable to obtain current device on state to perform toggle: ${e}`);
+          }));
+        }
+        // If toggle wasn't requested the targetState is true if "on" was requested and false
+        // for any other value.
+        else {
+          targetState = requestedState.toLowerCase() === "on";
+        }
       }
     } catch (e) {
       // This means the current on state couldn't be retrieved so just give up.
@@ -86,43 +168,17 @@ export = (RED: Red): void => {
       return;
     }
 
-    // If the targetState couldn't be obtained for toggle then bail as failed.
-    if (targetState == null) return;
+    // If we requested a state, and the targetState couldn't be obtained for toggle then bail as failed.
+    if (requestedState && targetState == null) return;
 
     // Third step is to actually set the on state to what it should be in the initial WLED call, taking into
     // account the delay. If there's a delay the state is always "on" to play the effect before switching to
-    // the desired state.
-    const on = delay ? true : targetState;
-
-    const state = {
-      on,
-    } as IWledState;
-
-    // If a preset was set then that overrides everything else
-    if (payload?.preset || this.config.preset) {
-      state.ps = payload?.preset ?? Number(this.config.preset);
-    } else {
-      state.bri = payload?.brightness ?? Number(this.config.brightness);
-
-      // Multi-segment support is provided via the incoming payload. If the
-      // seg object is specified in the payload then it's what gets used
-      // to set the entire segment object. Otherwise the individual
-      // properties are set manually.
-      if (payload?.seg) {
-        state.seg = payload.seg;
-      } else {
-        state.seg = {
-          col: [
-            payload?.color1 ?? helpers.hexToRgb(this.config.color1),
-            payload?.color2 ?? helpers.hexToRgb(this.config.color2),
-            payload?.color3 ?? helpers.hexToRgb(this.config.color3),
-          ],
-          fx: payload?.effect ?? Number(this.config.effect),
-          ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
-          pal: payload?.palette ?? Number(this.config.palette),
-          sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
-        } as IWledSegment;
-      }
+    // the desired state. If there isn't a delay, check to see if we have a requestedState. If we do, we have a target state.
+    // If we don't, we don't want to send this param. 
+    const on = delay ? true : requestedState ? targetState : undefined;
+    const state = convertPayloadToState(mergedPayload)
+    if (on !== undefined) {
+      state.on = on
     }
 
     // On failures the node can just do nothing. Error state
