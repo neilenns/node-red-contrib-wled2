@@ -14,6 +14,7 @@ import * as NodeGlobals from "./nodeGlobals";
 import palettes from "./controllers/palettes";
 import { Red } from "node-red";
 import WledDevice from "./WledDevice";
+import { wrap } from "module";
 
 export = (RED: Red): void => {
   NodeGlobals.setRed(RED);
@@ -48,8 +49,9 @@ export = (RED: Red): void => {
     });
   });
 
-  function which(val1: any, val2: any): any {
-    return val1 ? val1 : val2 ? val2 : undefined;
+  function which(val1: any, val2: any, wrapper?: any): any {
+    const val = val1 ? val1 : val2 ? val2 : undefined;
+    return wrapper && val !== undefined ? wrapper(val) : val
   }
 
   function getMergedPayloadAndConfig(payload: IWledNodeProperties, config: IWledNodeProperties): IWledNodeProperties {
@@ -57,16 +59,16 @@ export = (RED: Red): void => {
       name: "N/A"
     } as IWledNodeProperties
     mergedProperties.address = which(payload.address, config.address)
-    mergedProperties.brightness = which(payload.brightness, payload.brightness);
+    mergedProperties.brightness = which(payload.brightness, payload.brightness, Number);
     mergedProperties.color1 = which(payload.color1, config.color1)
     mergedProperties.color2 = which(payload.color2, config.color2)
     mergedProperties.color3 = which(payload.color3, config.color3)
-    mergedProperties.delay = which(payload.delay, config.delay)
-    mergedProperties.effect = which(payload.effect, config.effect)
-    mergedProperties.effectIntensity = which(payload.effectIntensity, config.effectIntensity)
-    mergedProperties.effectSpeed = which(payload.effectSpeed, config.effectSpeed)
-    mergedProperties.palette = which(payload.palette, config.palette)
-    mergedProperties.preset = which(payload.preset, config.preset)
+    mergedProperties.delay = which(payload.delay, config.delay, Number)
+    mergedProperties.effect = which(payload.effect, config.effect, Number)
+    mergedProperties.effectIntensity = which(payload.effectIntensity, config.effectIntensity, Number)
+    mergedProperties.effectSpeed = which(payload.effectSpeed, config.effectSpeed, Number)
+    mergedProperties.palette = which(payload.palette, config.palette, Number)
+    mergedProperties.preset = which(payload.preset, config.preset, Number)
     mergedProperties.state = which(payload.state, config.state)
     mergedProperties.seg = which(payload.seg, config.seg)
     return mergedProperties
@@ -193,6 +195,8 @@ export = (RED: Red): void => {
     }
 
     // Pass the message on
+    msg.payload = mergedPayload
+    msg.state = state
     this.send(msg);
   }
 

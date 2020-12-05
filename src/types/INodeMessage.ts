@@ -6,5 +6,6 @@ import IWledNodeProperties from "./IWledNodeProperties";
 
 export default interface INodeMessage {
   payload: IWledNodeProperties;
+  state: any;
   topic?: string;
 }
