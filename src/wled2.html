@@ -5,17 +5,28 @@
     defaults: {
       address: { value: "", required: true },
       brightness: { value: 128 },
+      enableBrightness: { value: true},
       delay: { value: 0, validate: RED.validators.number() },
+      enableDelay: { value: true},
       color1: { value: "#FFFFFF" },
+      enableColor1: { value: true},
       color2: { value: "#FFFFFF" },
+      enableColor2: { value: true},
       color3: { value: "#FFFFFF" },
+      enableColor3: { value: true},
       effect: { value: 0 },
+      enableEffect: { value: true},
       effectIntensity: { value: 128 },
+      enableEffectIntensity: { value: true},
       effectSpeed: { value: 128 },
+      enableEffectSpeed: { value: true},
       name: { value: "" },
       palette: { value: "0" },
+      enablePalette: { value: true},
       preset: { value: null },
+      enablePreset: { value: true},
       state: { value: "on" },
+      enableState: { value: true},
     },
     inputs: 1,
     outputs: 1,
@@ -26,19 +37,38 @@
     labelStyle: function() {
       return this.name ? "node_label_italic" : "";
     },
-    oneditsave: function() {
-      $('input:disabled').attr('type', 'text').val("")
-    },
     oneditprepare: function() {
       $("#node-input-address").change({ currentEffect: this.effect, currentPalette: this.palette }, loadDropdowns);
 
       $('label').click((ev) => {
         const em = $(ev.currentTarget)
-        const element = $('#' + em.attr('for'))
-        if (element.length == 1) {
-          element.prop('disabled', !element.prop('disabled'))
+        const checkbox = em.find('input').first()
+        if (checkbox.length !== 0) {
+          const clicked = $(ev.target);
+          const newState = !checkbox.prop('checked')
+          if (clicked.attr('id') !== checkbox.attr('id')) {
+            checkbox.prop('checked', newState)
+          }
+          const element = $('#' + em.attr('for'))
+          if (element.length == 1) {
+            element.prop('disabled', !newState)
+          }
         }
       })
+
+      $('label').each(function( index ) {
+        const em = $(this);
+        const checkbox = em.find('input').first()
+        if (checkbox.length !== 0) {
+          const newState = !checkbox.prop('checked')
+          const element = $('#' + em.attr('for'))
+          if (element.length == 1) {
+            console.log(element.attr('id'))
+            console.log(newState)
+            element.prop('disabled', newState)
+          }
+        }
+      });
 
       $("#node-input-delay").typedInput({
         type: "num",
@@ -197,7 +227,11 @@
         </div>
       </div>
       <div class="form-row">
-        <label for="node-input-state"><i class="icon-tag"></i> State</label>
+        
+        <label for="node-input-state">
+          <input class="ignore-click" style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableState" />
+          <i class="icon-tag"></i> State
+        </label>
         <select id="node-input-state">
           <option value="on">on</option>
           <option value="off">off</option>
@@ -205,44 +239,74 @@
         </select>
       </div>
       <div class="form-row">
-        <label for="node-input-brightness"><i class="icon-tag"></i> Level</label>
+        <label for="node-input-brightness">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableBrightness" />
+          <i class="icon-tag"></i> Brightness
+        </label>
         <input type="range" id="node-input-brightness" min="1" max="255">
       </div>
       <div class="form-row">
-        <label for="node-input-color1"><i class="icon-tag"></i> Color</label>
+        <label for="node-input-color1">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableColor1" />
+          <i class="icon-tag"></i> Color
+        </label>
         <input type="color" id="node-input-color1">
       </div>
       <div class="form-row">
-        <label for="node-input-color2"><i class="icon-tag"></i> Color 2</label>
+        <label for="node-input-color2">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableColor2" />
+          <i class="icon-tag"></i> Color 2
+        </label>
         <input type="color" id="node-input-color2">
       </div>
       <div class="form-row">
-        <label for="node-input-color3"><i class="icon-tag"></i> Color 3</label>
+        <label for="node-input-color3">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableColor3" />
+          <i class="icon-tag"></i> Color 3
+        </label>
         <input type="color" id="node-input-color3">
       </div>
       <div class="form-row">
-        <label for="node-input-effect"><i class="icon-server"></i> Effect</label>
+        <label for="node-input-effect">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableEffect" />
+          <i class="icon-server"></i> Effect
+        </label>
         <select id="node-input-effect"></select>
     </div>
     <div class="form-row">
-      <label for="node-input-effectSpeed"><i class="icon-tag"></i> Effect speed</label>
+      <label for="node-input-effectSpeed">
+        <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableEffectSpeed" />
+        <i class="icon-tag"></i> Effect speed
+      </label>
       <input type="range" id="node-input-effectSpeed" min="0" max="255">
     </div>
     <div class="form-row">
-      <label for="node-input-effectIntensity"><i class="icon-tag"></i> Effect intensity</label>
+      <label for="node-input-effectIntensity">
+        <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableEffectIntensity" />
+        <i class="icon-tag"></i> Effect intensity
+      </label>
       <input type="range" id="node-input-effectIntensity" min="0" max="255">
     </div>
 
       <div class="form-row">
-        <label for="node-input-palette"><i class="icon-server"></i> Palette</label>
+        <label for="node-input-palette">
+          <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enablePalette" />
+          <i class="icon-server"></i> Palette
+        </label>
         <select id="node-input-palette"></select>
     </div>
     <div class="form-row">
-      <label for="node-input-preset"><i class="icon-tag"></i> Preset</label>
+      <label for="node-input-preset">
+        <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enablePreset" />
+        <i class="icon-tag"></i> Preset
+      </label>
       <input type="number" step="1" min="1" max="65535" id="node-input-preset" />
   </div>
   <div class="form-row">
-      <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
+      <label for="node-input-delay">
+        <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableDelay" />
+        <i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)
+      </label>
       <input type="text" id="node-input-delay" placeholder="0">
     </div>
 </script>

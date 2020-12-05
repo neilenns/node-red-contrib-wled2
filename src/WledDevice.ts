@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import { EventEmitter } from "events";
 import fetch from "node-fetch";
+import IWledSegment from "./types/IWledSegment";
 import IWledState from "./types/IWLedState";
 
 export default class WledDevice extends EventEmitter {
@@ -59,6 +60,24 @@ export default class WledDevice extends EventEmitter {
       throw e;
     });
     return this.currentState.on;
+  }
+
+  /**
+   * Gets the current on state for a WLED device. Basically the same
+   * as getting the state, but only returning a single property.
+   * @returns True if the light is on, false otherwise.
+   */
+  public async getCurrentColorState(): Promise<number[][]> {
+    await this.getState().catch(e => {
+      throw e;
+    });
+    try {
+      const seg: IWledSegment = this.currentState.seg as IWledSegment;
+      return seg.col
+    } catch {
+      const segs: IWledSegment[] = this.currentState.seg as IWledSegment[]
+      return segs[0].col
+    }
   }
 
   /**
