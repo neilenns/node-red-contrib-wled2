@@ -85,14 +85,14 @@ export = (RED: Red): void => {
     return mergedProperties
   }
 
-  function convertPayloadToState(payload: IWledNodeProperties, colorState?: number[][]): IWledState {
+  function convertPayloadToState(payload: IWledNodeProperties, msg: IWledNodeProperties, colorState?: number[][]): IWledState {
     const state = {} as IWledState;
 
     // If a preset was set then that overrides everything else
-    if (payload.enablePreset && payload.preset) {
+    if ((payload.enablePreset && payload.preset) || msg.preset) {
       state.ps = payload.preset;
     } else {
-      if (payload.enableBrightness) {
+      if (payload.enableBrightness || msg.brightness) {
         state.bri = payload.brightness;
       }
 
@@ -105,24 +105,24 @@ export = (RED: Red): void => {
       } else {
         const seg = {} as IWledSegment
         seg.col = [
-          payload.enableColor1 ? helpers.hexToRgb(payload.color1) : colorState ? colorState[0] : [0,0,0],
-          payload.enableColor2 ? helpers.hexToRgb(payload.color2) : colorState ? colorState[1] : [0,0,0],
-          payload.enableColor3 ? helpers.hexToRgb(payload.color3) : colorState ? colorState[2] : [0,0,0]
+          payload.enableColor1 || msg.color1 ? helpers.hexToRgb(payload.color1) : colorState ? colorState[0] : [0,0,0],
+          payload.enableColor2 || msg.color2 ? helpers.hexToRgb(payload.color2) : colorState ? colorState[1] : [0,0,0],
+          payload.enableColor3 || msg.color3 ? helpers.hexToRgb(payload.color3) : colorState ? colorState[2] : [0,0,0]
         ];
 
-        if (payload.enableEffect) {
+        if (payload.enableEffect || msg.effect) {
           seg.fx = payload.effect
         }
 
-        if (payload.enableEffectIntensity) {
+        if (payload.enableEffectIntensity || msg.effectIntensity) {
           seg.ix = payload.effectIntensity
         }
 
-        if (payload.enablePalette) {
+        if (payload.enablePalette || msg.palette) {
           seg.pal = payload.palette
         }
 
-        if (payload.enableEffectSpeed) {
+        if (payload.enableEffectSpeed || msg.effectSpeed) {
           seg.sx = payload.effectSpeed
         }
         state.seg = seg;
@@ -184,8 +184,8 @@ export = (RED: Red): void => {
     const colors = (await this.wled.getCurrentColorState().catch(e => {
       throw Error(`Unable to obtain current device on state for colors: ${e}`);
     }));
-    const state = convertPayloadToState(mergedPayload, colors)
-    if (mergedPayload.enableState) {
+    const state = convertPayloadToState(mergedPayload, payload, colors)
+    if (mergedPayload.enableState || payload.state) {
       state.on = on
     }
 
@@ -196,7 +196,7 @@ export = (RED: Red): void => {
     });
 
     // If a delay was requested flip to solid state after the specified number of seconds.
-    if (delay && mergedPayload.enableDelay) {
+    if (delay && (mergedPayload.enableDelay || payload.delay)) {
       this.solidTimer = setTimeout(setSolidState.bind(this), delay * 1000, targetState);
     }
 
