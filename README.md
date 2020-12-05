@@ -22,3 +22,5 @@ The various parameters for the LEDs can also be provided by the incoming payload
 | `preset`          | The preset to display. If specified all other properties are ignored.                                                                                                                                  | number   | `16`            |
 | `seg`             | The segment or array of segments to configure. See the [WLED JSON API documentation](https://github.com/Aircoookie/WLED/wiki/JSON-API#setting-new-values) for information on the supported properties. | object   |                 |
 | `state`           | The state to set the LEDs to. Supported values are `on`, `off`, and `toggle`.                                                                                                                          | string   | `toggle`        |
+
+Each of these properties, except for `seg`, has a matching `enableCamelCase` property. For example, `enableBrightness`, when set to `false`, would stop a node from sending whatever brightness value it has set.

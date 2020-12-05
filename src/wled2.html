@@ -46,12 +46,15 @@
         if (checkbox.length !== 0) {
           const clicked = $(ev.target);
           const newState = !checkbox.prop("checked");
-          if (clicked.attr("id") !== checkbox.attr("id")) {
-            checkbox.prop("checked", newState);
-          }
+          
           const element = $("#" + em.attr("for"));
           if (element.length == 1) {
-            element.prop("disabled", !newState);
+            if (clicked.attr("id") !== checkbox.attr("id")) {
+              checkbox.prop("checked", newState);
+              element.prop("disabled", !newState);
+            } else {
+              element.prop("disabled", newState);
+            }
           }
         }
       });
