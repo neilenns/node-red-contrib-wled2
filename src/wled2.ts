@@ -199,10 +199,7 @@ export = (RED: Red): void => {
     if (delay && (mergedPayload.enableDelay || payload.delay)) {
       this.solidTimer = setTimeout(setSolidState.bind(this), delay * 1000, targetState);
     }
-
-    // Pass the message on
-    msg.payload = mergedPayload
-    msg.state = state
+    
     this.send(msg);
   }
 
