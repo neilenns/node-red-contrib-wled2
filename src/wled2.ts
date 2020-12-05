@@ -64,9 +64,9 @@ export = (RED: Red): void => {
     mergedProperties.color1 = which(payload.color1, config.color1)
     mergedProperties.enableColor1 = which(payload.enableColor1, config.enableColor1)
     mergedProperties.color2 = which(payload.color2, config.color2)
-    mergedProperties.enableColor2 = which(payload.enableColor2, config.enableColor3)
+    mergedProperties.enableColor2 = which(payload.enableColor2, config.enableColor2)
     mergedProperties.color3 = which(payload.color3, config.color3)
-    mergedProperties.enableColor3 = which(payload.enableColor2, config.enableColor3)
+    mergedProperties.enableColor3 = which(payload.enableColor3, config.enableColor3)
     mergedProperties.delay = which(payload.delay, config.delay, Number)
     mergedProperties.enableDelay = which(payload.enableDelay, config.enableDelay)
     mergedProperties.effect = which(payload.effect, config.effect, Number)
@@ -105,9 +105,9 @@ export = (RED: Red): void => {
       } else {
         const seg = {} as IWledSegment
         seg.col = [
-          payload.enableColor1 ? helpers.hexToRgb(payload.color1) : colorState[0],
-          payload.enableColor2 ? helpers.hexToRgb(payload.color2) : colorState[1],
-          payload.enableColor3 ? helpers.hexToRgb(payload.color3) : colorState[2]
+          payload.enableColor1 ? helpers.hexToRgb(payload.color1) : colorState ? colorState[0] : [0,0,0],
+          payload.enableColor2 ? helpers.hexToRgb(payload.color2) : colorState ? colorState[1] : [0,0,0],
+          payload.enableColor3 ? helpers.hexToRgb(payload.color3) : colorState ? colorState[2] : [0,0,0]
         ];
 
         if (payload.enableEffect) {

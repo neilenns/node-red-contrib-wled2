@@ -71,13 +71,8 @@ export default class WledDevice extends EventEmitter {
     await this.getState().catch(e => {
       throw e;
     });
-    try {
-      const seg: IWledSegment = this.currentState.seg as IWledSegment;
-      return seg.col
-    } catch {
-      const segs: IWledSegment[] = this.currentState.seg as IWledSegment[]
-      return segs[0].col
-    }
+    const segs: IWledSegment[] = this.currentState.seg as IWledSegment[]
+    return segs[0].col
   }
 
   /**

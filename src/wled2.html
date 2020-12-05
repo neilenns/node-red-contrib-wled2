@@ -5,28 +5,28 @@
     defaults: {
       address: { value: "", required: true },
       brightness: { value: 128 },
-      enableBrightness: { value: true},
+      enableBrightness: { value: true },
       delay: { value: 0, validate: RED.validators.number() },
-      enableDelay: { value: true},
+      enableDelay: { value: true },
       color1: { value: "#FFFFFF" },
-      enableColor1: { value: true},
+      enableColor1: { value: true },
       color2: { value: "#FFFFFF" },
-      enableColor2: { value: true},
+      enableColor2: { value: true },
       color3: { value: "#FFFFFF" },
-      enableColor3: { value: true},
+      enableColor3: { value: true },
       effect: { value: 0 },
-      enableEffect: { value: true},
+      enableEffect: { value: true },
       effectIntensity: { value: 128 },
-      enableEffectIntensity: { value: true},
+      enableEffectIntensity: { value: true },
       effectSpeed: { value: 128 },
-      enableEffectSpeed: { value: true},
+      enableEffectSpeed: { value: true },
       name: { value: "" },
       palette: { value: "0" },
-      enablePalette: { value: true},
+      enablePalette: { value: true },
       preset: { value: null },
-      enablePreset: { value: true},
+      enablePreset: { value: true },
       state: { value: "on" },
-      enableState: { value: true},
+      enableState: { value: true },
     },
     inputs: 1,
     outputs: 1,
@@ -40,32 +40,32 @@
     oneditprepare: function() {
       $("#node-input-address").change({ currentEffect: this.effect, currentPalette: this.palette }, loadDropdowns);
 
-      $('label').click((ev) => {
-        const em = $(ev.currentTarget)
-        const checkbox = em.find('input').first()
+      $("label").click(ev => {
+        const em = $(ev.currentTarget);
+        const checkbox = em.find("input").first();
         if (checkbox.length !== 0) {
           const clicked = $(ev.target);
-          const newState = !checkbox.prop('checked')
-          if (clicked.attr('id') !== checkbox.attr('id')) {
-            checkbox.prop('checked', newState)
+          const newState = !checkbox.prop("checked");
+          if (clicked.attr("id") !== checkbox.attr("id")) {
+            checkbox.prop("checked", newState);
           }
-          const element = $('#' + em.attr('for'))
+          const element = $("#" + em.attr("for"));
           if (element.length == 1) {
-            element.prop('disabled', !newState)
+            element.prop("disabled", !newState);
           }
         }
-      })
+      });
 
-      $('label').each(function( index ) {
+      $("label").each(function(index) {
         const em = $(this);
-        const checkbox = em.find('input').first()
+        const checkbox = em.find("input").first();
         if (checkbox.length !== 0) {
-          const newState = !checkbox.prop('checked')
-          const element = $('#' + em.attr('for'))
+          const newState = !checkbox.prop("checked");
+          const element = $("#" + em.attr("for"));
           if (element.length == 1) {
-            console.log(element.attr('id'))
-            console.log(newState)
-            element.prop('disabled', newState)
+            console.log(element.attr("id"));
+            console.log(newState);
+            element.prop("disabled", newState);
           }
         }
       });
@@ -227,7 +227,7 @@
         </div>
       </div>
       <div class="form-row">
-        
+
         <label for="node-input-state">
           <input class="ignore-click" style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enableState" />
           <i class="icon-tag"></i> State
