@@ -63,8 +63,6 @@
           const newState = !checkbox.prop("checked");
           const element = $("#" + em.attr("for"));
           if (element.length == 1) {
-            console.log(element.attr("id"));
-            console.log(newState);
             element.prop("disabled", newState);
           }
         }
@@ -300,7 +298,7 @@
         <input style="margin: 0; width: auto;" type="checkbox" title="Enable?" alt="Enable?" id="node-input-enablePreset" />
         <i class="icon-tag"></i> Preset
       </label>
-      <input type="number" step="1" min="1" max="65535" id="node-input-preset" />
+      <input type="number" step="1" min="1" max="65535" placeholder="0" id="node-input-preset" />
   </div>
   <div class="form-row">
       <label for="node-input-delay">

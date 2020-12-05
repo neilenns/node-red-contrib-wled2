@@ -24,7 +24,6 @@ export = (RED: Red): void => {
   RED.httpAdmin.get("/wled2/palettes/:address", palettes);
   RED.nodes.registerType("wled2", function(this: IWledNode, props: IWledNodeProperties) {
     this.config = props as IWledNodeProperties;
-    console.log(this.config)
     RED.nodes.createNode(this, props);
 
     // When this is loaded for the node palette there's no address
@@ -199,7 +198,7 @@ export = (RED: Red): void => {
     if (delay && (mergedPayload.enableDelay || payload.delay)) {
       this.solidTimer = setTimeout(setSolidState.bind(this), delay * 1000, targetState);
     }
-    
+
     this.send(msg);
   }
 
