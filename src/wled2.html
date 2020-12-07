@@ -40,33 +40,45 @@
     oneditprepare: function() {
       $("#node-input-address").change({ currentEffect: this.effect, currentPalette: this.palette }, loadDropdowns);
 
-      $("label").click(ev => {
-        const em = $(ev.currentTarget);
-        const checkbox = em.find("input").first();
-        if (checkbox.length !== 0) {
-          const clicked = $(ev.target);
-          const newState = !checkbox.prop("checked");
-          
-          const element = $("#" + em.attr("for"));
-          if (element.length == 1) {
-            if (clicked.attr("id") !== checkbox.attr("id")) {
-              checkbox.prop("checked", newState);
-              element.prop("disabled", !newState);
+      // When a label is clicked, toggle it's enabled/disabled status, if possible
+      $("label").click(event => {
+        // Get the element this click event applies to
+        const label = $(event.currentTarget);
+        const stateCheckbox = label.find("input").first();
+        // If there isn't a checkbox inside the label, skip
+        if (stateCheckbox.length !== 0) {          
+          const elementFromLabel = $("#" + label.attr("for"));
+          // If there isn't a field attached to the label, skip
+          if (elementFromLabel.length == 1) {
+            // Get the element that was actually clicked for this event, not it's parent.
+            const clickedElement = $(event.target);
+            // Flip state, checked == true, which means the field is enabled, so disabled is false.
+            const newState = !stateCheckbox.prop("checked");
+            // Check if what we clicked was the checkbox
+            if (clickedElement.attr("id") !== stateCheckbox.attr("id")) {
+              // If we didn't click the checkbox, flip the state of the checkbox, and the disabled state of the input
+              stateCheckbox.prop("checked", newState);
+              // Double flipped because the value we got before was when we hadn't flipped the checkbox.
+              clickedElement.prop("disabled", !newState);
             } else {
-              element.prop("disabled", newState);
+              // If we did click the checkbox, just update the disabled state of the input
+              clickedElement.prop("disabled", newState);
             }
           }
         }
       });
 
+      // On page load for each label, get the checkbox inside
+      // If it has a checkbox, update the label's referenced field to be enabled/disabled based on the checkbox
       $("label").each(function(index) {
-        const em = $(this);
-        const checkbox = em.find("input").first();
-        if (checkbox.length !== 0) {
-          const newState = !checkbox.prop("checked");
-          const element = $("#" + em.attr("for"));
-          if (element.length == 1) {
-            element.prop("disabled", newState);
+        const label = $(this);
+        const stateCheckbox = label.find("input").first();
+        if (stateCheckbox.length !== 0) {
+          const newState = !stateCheckbox.prop("checked");
+          const elementFromLabel = $(`#${label.attr("for")}`);
+          if (elementFromLabel.length == 1) {
+            // Update the element to match it's enabled/disabled state from the checkbox
+            elementFromLabel.prop("disabled", newState);
           }
         }
       });

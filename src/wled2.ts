@@ -14,7 +14,6 @@ import * as NodeGlobals from "./nodeGlobals";
 import palettes from "./controllers/palettes";
 import { Red } from "node-red";
 import WledDevice from "./WledDevice";
-import { wrap } from "module";
 
 export = (RED: Red): void => {
   NodeGlobals.setRed(RED);
@@ -48,8 +47,13 @@ export = (RED: Red): void => {
     });
   });
 
-  function which(val1: any, val2: any, wrapper?: any): any {
-    const val = val1 !== null && val1 !== undefined ? val1 : val2 !== null && val2 !== undefined ? val2 : undefined;
+  // This function will 
+  function which(
+    incomingPayloadValue: string | number | boolean | IWledSegment[],
+    nodePayloadValue: string | number | boolean | IWledSegment[],
+    wrapper?: NumberConstructor // Add more types if used for others later.
+  ): string | number | boolean | IWledSegment[] {
+    const val = incomingPayloadValue ?? nodePayloadValue ?? undefined;
     return wrapper && val !== undefined ? wrapper(val) : val
   }
 
@@ -57,30 +61,30 @@ export = (RED: Red): void => {
     const mergedProperties = {
       name: "N/A"
     } as IWledNodeProperties
-    mergedProperties.address = which(payload.address, config.address)
-    mergedProperties.brightness = which(payload.brightness, config.brightness, Number);
-    mergedProperties.enableBrightness = which(payload.enableBrightness, config.enableBrightness)
-    mergedProperties.color1 = which(payload.color1, config.color1)
-    mergedProperties.enableColor1 = which(payload.enableColor1, config.enableColor1)
-    mergedProperties.color2 = which(payload.color2, config.color2)
-    mergedProperties.enableColor2 = which(payload.enableColor2, config.enableColor2)
-    mergedProperties.color3 = which(payload.color3, config.color3)
-    mergedProperties.enableColor3 = which(payload.enableColor3, config.enableColor3)
-    mergedProperties.delay = which(payload.delay, config.delay, Number)
-    mergedProperties.enableDelay = which(payload.enableDelay, config.enableDelay)
-    mergedProperties.effect = which(payload.effect, config.effect, Number)
-    mergedProperties.enableEffect = which(payload.enableEffect, config.enableEffect)
-    mergedProperties.effectIntensity = which(payload.effectIntensity, config.effectIntensity, Number)
-    mergedProperties.enableEffectIntensity = which(payload.enableEffectIntensity, config.enableEffectIntensity)
-    mergedProperties.effectSpeed = which(payload.effectSpeed, config.effectSpeed, Number)
-    mergedProperties.enableEffectSpeed = which(payload.enableEffectSpeed, config.enableEffectSpeed)
-    mergedProperties.palette = which(payload.palette, config.palette, Number)
-    mergedProperties.enablePalette = which(payload.enablePalette, config.enablePalette)
-    mergedProperties.preset = which(payload.preset, config.preset, Number)
-    mergedProperties.enablePreset = which(payload.enablePreset, config.enablePreset)
-    mergedProperties.state = which(payload.state, config.state)
-    mergedProperties.enableState = which(payload.enableState, config.enableState)
-    mergedProperties.seg = which(payload.seg, config.seg)
+    mergedProperties.address = which(payload.address, config.address) as string
+    mergedProperties.brightness = which(payload.brightness, config.brightness, Number) as number
+    mergedProperties.enableBrightness = which(payload.enableBrightness, config.enableBrightness) as boolean
+    mergedProperties.color1 = which(payload.color1, config.color1) as string
+    mergedProperties.enableColor1 = which(payload.enableColor1, config.enableColor1) as boolean
+    mergedProperties.color2 = which(payload.color2, config.color2) as string
+    mergedProperties.enableColor2 = which(payload.enableColor2, config.enableColor2) as boolean
+    mergedProperties.color3 = which(payload.color3, config.color3) as string
+    mergedProperties.enableColor3 = which(payload.enableColor3, config.enableColor3) as boolean
+    mergedProperties.delay = which(payload.delay, config.delay, Number) as number
+    mergedProperties.enableDelay = which(payload.enableDelay, config.enableDelay) as boolean
+    mergedProperties.effect = which(payload.effect, config.effect, Number) as number
+    mergedProperties.enableEffect = which(payload.enableEffect, config.enableEffect) as boolean
+    mergedProperties.effectIntensity = which(payload.effectIntensity, config.effectIntensity, Number) as number
+    mergedProperties.enableEffectIntensity = which(payload.enableEffectIntensity, config.enableEffectIntensity) as boolean
+    mergedProperties.effectSpeed = which(payload.effectSpeed, config.effectSpeed, Number) as number
+    mergedProperties.enableEffectSpeed = which(payload.enableEffectSpeed, config.enableEffectSpeed) as boolean
+    mergedProperties.palette = which(payload.palette, config.palette, Number) as number
+    mergedProperties.enablePalette = which(payload.enablePalette, config.enablePalette) as boolean
+    mergedProperties.preset = which(payload.preset, config.preset, Number) as number
+    mergedProperties.enablePreset = which(payload.enablePreset, config.enablePreset) as boolean
+    mergedProperties.state = which(payload.state, config.state) as string
+    mergedProperties.enableState = which(payload.enableState, config.enableState) as boolean
+    mergedProperties.seg = which(payload.seg, config.seg) as IWledSegment[]
     return mergedProperties
   }
 
