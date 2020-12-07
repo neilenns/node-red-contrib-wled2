@@ -47,7 +47,7 @@
         const stateCheckbox = label.find("input").first();
         // If there isn't a checkbox inside the label, skip
         if (stateCheckbox.length !== 0) {          
-          const elementFromLabel = $("#" + label.attr("for"));
+          const elementFromLabel = $(`#${label.attr("for")}`);
           // If there isn't a field attached to the label, skip
           if (elementFromLabel.length == 1) {
             // Get the element that was actually clicked for this event, not it's parent.
