@@ -1,6 +1,10 @@
 # Changelog
 
-## v.2.3.0 - 2020-11-14
+## v2.4.0 - 2020-12-12
+
+- Presets up to 65535 are now supported. Resolves [issue 87](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/87).
+
+## v2.3.0 - 2020-11-14
 
 - Presets can now be selected by passing `preset` as part of the payload or by picking the preset number from the dropdown
   in the node UI. Resolves [issue 81](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/81).
