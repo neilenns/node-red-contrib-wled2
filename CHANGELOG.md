@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.4.1 - 2020-12-15
+
+- Address a minor security vulnerability in a dependency. Resolves [issue 90](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/90).
+
 ## v2.4.0 - 2020-12-12
 
 - Presets up to 65535 are now supported. Resolves [issue 87](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/87).
