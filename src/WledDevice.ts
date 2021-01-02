@@ -66,6 +66,7 @@ export default class WledDevice extends EventEmitter {
    * @param state The state to send to the WLED device
    */
   public async setState(state: IWledState): Promise<void> {
+    
     try {
       this.setConnectingState();
       const response = await fetch(`http://${this.server}/json/state`, {

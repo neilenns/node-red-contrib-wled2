@@ -7,6 +7,7 @@ import IWledSegment from "./IWledSegment";
 
 export default interface IWledNodeProperties extends NodeProperties {
   address: string;
+  segmentId: number;
   brightness: number;
   color1: string; // Comes in as #aabbcc
   color2: string; // Comes in as #aabbcc
@@ -16,6 +17,7 @@ export default interface IWledNodeProperties extends NodeProperties {
   effectSpeed: number;
   name: string;
   state: string;
+  debug: string;
   delay: number;
   palette: number;
   preset?: number;

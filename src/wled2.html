@@ -4,11 +4,12 @@
     color: "#a6bbcf",
     defaults: {
       address: { value: "", required: true },
+      segmentId: {value: 0, validate: RED.validators.number() },
       brightness: { value: 128 },
       delay: { value: 0, validate: RED.validators.number() },
-      color1: { value: "#FFFFFF" },
-      color2: { value: "#FFFFFF" },
-      color3: { value: "#FFFFFF" },
+      color1: { value: "#000000" },
+      color2: { value: "#000000" },
+      color3: { value: "#000000" },
       effect: { value: 0 },
       effectIntensity: { value: 128 },
       effectSpeed: { value: 128 },
@@ -16,6 +17,7 @@
       palette: { value: "0" },
       preset: { value: 0 },
       state: { value: "on" },
+      debug: { value: "off" },
     },
     inputs: 1,
     outputs: 1,
@@ -190,6 +192,10 @@
         </div>
       </div>
       <div class="form-row">
+        <label for="node-input-segmentId"><i class="icon-tag"></i> Segment ID</label>
+        <input type="number" step="1" min="0" max="65535" placeholder="0" id="node-input-segmentId" />
+      </div>
+      <div class="form-row">
         <label for="node-input-state"><i class="icon-tag"></i> State</label>
         <select id="node-input-state">
           <option value="on">on</option>
@@ -233,10 +239,18 @@
     <div class="form-row">
       <label for="node-input-preset"><i class="icon-tag"></i> Preset</label>
       <input type="number" step="1" min="0" max="65535" placeholder="0" id="node-input-preset" />
-  </div>
+    </div>
   <div class="form-row">
       <label for="node-input-delay"><i class="fa fa-clock-o"></i> Delay before changing to solid (in seconds)</label>
       <input type="text" id="node-input-delay" placeholder="0">
+    </div>
+    <div class="form-row">
+      <label for="node-input-debug"><i class="icon-tag"></i> Debug</label>
+      <select id="node-input-debug">
+        <option value="off">off</option>
+        <option value="on">on</option>
+      </select>
+      <small>output payload to debug window using node.warn</small>
     </div>
 </script>
 

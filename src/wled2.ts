@@ -111,7 +111,9 @@ export = (RED: Red): void => {
       if (payload?.seg) {
         state.seg = payload.seg;
       } else {
-        state.seg = {
+        state.seg = [{
+          id: payload?.segmentId ?? Number(this.config.segmentId),
+          on: payload?.state ?? true,
           col: [
             payload?.color1 ?? helpers.hexToRgb(this.config.color1),
             payload?.color2 ?? helpers.hexToRgb(this.config.color2),
@@ -121,9 +123,14 @@ export = (RED: Red): void => {
           ix: payload?.effectIntensity ?? Number(this.config.effectIntensity),
           pal: payload?.palette ?? Number(this.config.palette),
           sx: payload?.effectSpeed ?? Number(this.config.effectSpeed),
-        } as IWledSegment;
+        } as IWledSegment] ;
       }
     }
+
+    // debug: todo set flag in object for this?
+    if(this.config.debug === "on") {
+      this.warn(state);
+    }  
 
     // On failures the node can just do nothing. Error state
     // will get set automatically by an event fired from the WledDevice object.
@@ -146,7 +153,7 @@ export = (RED: Red): void => {
         on,
         seg: [
           {
-            fx: 0,
+            fx: Number(this.config.segmentId),
             id: 0,
           },
         ],
