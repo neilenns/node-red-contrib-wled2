@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.4.2 - 2021-04-01
+
+- Address a security vulnerability in a dependency. Resolves [issue 94](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/97).
+
 ## v2.4.1 - 2020-12-15
 
 - Address a minor security vulnerability in a dependency. Resolves [issue 90](https://github.com/danecreekphotography/node-red-contrib-wled2/issues/90).
