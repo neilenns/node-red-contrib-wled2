@@ -1,5 +1,7 @@
 # node-red-contrib-wled2
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/danecreekphotography/node-red-contrib-wled2/)
+
 A node for controlling WLED devices from NodeRed. The node supports a single segment, and can control the effect (including speed and intensity), palette,
 color, and brightness level of the segment.
 
